@@ -1,0 +1,37 @@
+.redMarker {
+    border-radius:50%;
+    background-color:#FF0000;
+}
+
+.invisibleCell {
+    visibility: hidden;
+}
+
+.emptyCell {
+    border-radius:50%;
+}
+
+.greenMarker {
+    border-radius:50%;
+    background-color:#088e4d;
+}
+
+.yellowMarker {
+    border-radius:50%;
+    background-color:#fffb23;
+}
+
+.blueMarker {
+    border-radius:50%;
+    background-color:#130fec;
+}
+
+.whiteMarker {
+    border-radius:50%;
+    background-color: pink;
+}
+
+.blackMarker {
+    border-radius:50%;
+    background-color: black;
+}
