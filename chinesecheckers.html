@@ -741,13 +741,13 @@
 %& style(cell(I,J,K,L), border-width, thin) & hasSelectedCell(false) & ~hasSelectedCell(true)
 %& ~cell(X,Y,Z,A) & cell(X,Y,Z,A) & ~cell(I,J,K,L) & cell(I,J,K,empty)
 
-click(cell(X,Y,Z)) :: hasColor(X,Y,Z,A) & distinct(A,white) & hasSelected(false) ==> selectedCell(X,Y,Z) & style(cell(X,Y,Z), border-width, 2px) & hasSelected(true) & ~hasSelected(false)
+click(cell(X,Y,Z)) :: hasColor(X,Y,Z,A) & distinct(A,white) & hasSelected(false) ==> selectedCell(X,Y,Z) & hasSelected(true) & ~hasSelected(false)
 
 click(cell(X,Y,Z)) :: hasColor(X,Y,Z,A) & same(A, white) & selectedCell(I,J,K) & hasColor(I,J,K,L) ==>
-style(cell(X,Y,Z), background-color, L) & style(cell(X,Y,Z), border-color, L)
-& style(cell(I,J,K), border-color, black) & style(cell(I,J,K), background-color, A)
-& style(cell(I,J,K), border-width, thin) & ~hasColor(X,Y,Z,A) & hasColor(X,Y,Z,L) & ~hasColor(I,J,K,L)
- & hasColor(I,J,K,A) & ~selectedCell(I,J,K) & ~hasSelected(true) & hasSelected(false)
+style(cell(X,Y,Z), background-color, L) & ~style(cell(X,Y,Z), background-color, A)
+ & style(cell(I,J,K), background-color, A) & ~style(cell(I,J,K), background-color, L)
+ & ~hasColor(X,Y,Z,A) & hasColor(X,Y,Z,L) & ~hasColor(I,J,K,L)
+ & hasColor(I,J,K,A) & ~hasSelected(true) & hasSelected(false)
 
 
 </textarea>
@@ -755,21 +755,15 @@ style(cell(X,Y,Z), background-color, L) & style(cell(X,Y,Z), border-color, L)
 <!--=======================================================================-->
 
 <textarea id='lambda' type='text/hrf' style='display:none'>
-%cell(4, -8, 4, red, red)
-%cell(3, -7, 4, red, red)
-%cell(4, -7, 3, red, red)
-%cell(2, -6, 4, red, red)
-%cell(3, -6, 3, red, red)
-%cell(4, -6, 2, red, red)
 hasColor(1, -5, 4, red)
 hasColor(2, -5, 3, red)
 hasColor(3, -5, 2, red)
 hasColor(4, -5, 1, red)
 hasColor(0, -4, 4, white)
-hasColor( 1, -4, 3, white)
-hasColor( 2, -4, 2, white)
-hasColor( 3, -4, 1, white)
-hasColor( 4, -4, 0, white)
+hasColor(1, -4, 3, white)
+hasColor(2, -4, 2, white)
+hasColor(3, -4, 1, white)
+hasColor(4, -4, 0, white)
 hasSelected(false)
 
 </textarea>
