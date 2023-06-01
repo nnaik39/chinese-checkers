@@ -730,6 +730,12 @@
 <textarea id='library' style='display:none;width:800px;font-family:courier;display:none' rows='20'>
   cell(0, 0)
 
+  % Start working on the ruleset even without the IDs, using the format that we've already discussed
+  % As soon as you push it, we can test that!
+
+  % cell(diagonal1, diagonal2, horizontal, currentColor, originalColor)
+  % use original color as the border around the space or element
+
   style(cell(X, Y), background-color, transparent) :- satisfied(X, Y)
 % transform cell(a, b, c, red) to cell(a, b, c, transparent)
 

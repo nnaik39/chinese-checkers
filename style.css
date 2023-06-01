@@ -1,6 +1,7 @@
 .redMarker {
     border-radius:50%;
     background-color:#FF0000;
+    border-color:#FF0000;
 }
 
 .invisibleCell {
@@ -14,24 +15,29 @@
 .greenMarker {
     border-radius:50%;
     background-color:#088e4d;
+    border-color:#088e4d;
 }
 
 .yellowMarker {
     border-radius:50%;
     background-color:#fffb23;
+    border-color: #fffb23;
 }
 
 .blueMarker {
     border-radius:50%;
     background-color:#130fec;
+    border-color: #130fec;
 }
 
 .whiteMarker {
     border-radius:50%;
     background-color: pink;
+    border-color: pink;
 }
 
 .blackMarker {
     border-radius:50%;
-    background-color: black;
+    background-color:  #9c23d0;
+    border-color: #9c23d0;
 }
