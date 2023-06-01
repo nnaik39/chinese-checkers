@@ -1,43 +1,47 @@
+* {
+  border-width: thin;
+}
+
 .redMarker {
-    border-radius:50%;
-    background-color:#FF0000;
-    border-color:#FF0000;
+  border-radius:50%;
+  background-color: red;
+  border-color:red;
 }
 
 .invisibleCell {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .emptyCell {
-    border-radius:50%;
+  border-radius:50%;
 }
 
 .greenMarker {
-    border-radius:50%;
-    background-color:#088e4d;
-    border-color:#088e4d;
+  border-radius:50%;
+  background-color:green;
+  border-color:green;
 }
 
 .yellowMarker {
-    border-radius:50%;
-    background-color:#fffb23;
-    border-color: #fffb23;
+  border-radius:50%;
+  background-color:yellow;
+  border-color: yellow;
 }
 
 .blueMarker {
-    border-radius:50%;
-    background-color:#130fec;
-    border-color: #130fec;
+  border-radius:50%;
+  background-color:blue;
+  border-color: blue;
 }
 
-.whiteMarker {
-    border-radius:50%;
-    background-color: pink;
-    border-color: pink;
+.orangeMarker {
+  border-radius:50%;
+  background-color: orange;
+  border-color: orange;
 }
 
-.blackMarker {
-    border-radius:50%;
-    background-color:  #9c23d0;
-    border-color: #9c23d0;
+.purpleMarker {
+  border-radius:50%;
+  background-color:  purple;
+  border-color: purple;
 }
