@@ -7,6 +7,134 @@
   <link rel="stylesheet" href="style.css">
   <script type='text/javascript' src='http://epilog.stanford.edu/javascript/epilog.js'></script>
   <script type='text/javascript' src='http://worksheets.stanford.edu/javascript/worksheets.js'></script>
+  <script type='text/javascript'>
+    //------------------------------------------------------------------------------
+    // Code
+    //------------------------------------------------------------------------------
+    
+    var rules = [];
+    
+    function setup ()
+     {rules = readdata(document.getElementsByName('rules')[0].value);
+      var bases = readdata(document.getElementById('library').textContent);
+      definerules(library,rules.concat(bases));
+      populatesheet();
+      return true}
+    
+    function doopen ()
+     {var widget = document.getElementsByName('rules')[0];
+      var save = document.getElementById('save');
+      var back = document.getElementById('back');
+      highlight(widget);
+      save.removeAttribute('disabled');
+      back.removeAttribute('disabled');
+      return true}
+    
+    function doupdate ()
+     {var widget = document.getElementsByName('rules')[0];
+      var save = document.getElementById('save');
+      var back = document.getElementById('back');
+      var result = widget.value;
+      rules = readdata(result);
+      if (result.trim().length>0 && rules.length===0)
+         {alert('Syntax error.'); return false};
+      var bases = readdata(document.getElementById('library').textContent);
+      definerules(library,rules.concat(bases));
+      populatesheet();
+      backlight(widget);
+      save.setAttribute('disabled','true');
+      back.setAttribute('disabled','true');
+      return true}
+    
+    function dorevert ()
+     {var widget = document.getElementsByName('rules')[0];
+      var save = document.getElementById('save');
+      var back = document.getElementById('back');
+      widget.value = grindem(rules)
+      backlight(widget);
+      save.setAttribute('disabled','true');
+      back.setAttribute('disabled','true');
+      return true}
+    
+    function populatesheet ()
+     {var widgets = document.querySelectorAll('[id]');
+      for (var i=0; i<widgets.length; i++)
+          {populate(widgets[i])};
+      document.getElementsByName('facts')[0].value = grindem(lambda.sort());
+      reposition();
+      return true}
+    
+    function highlight (widget)
+     {widget.style.boxShadow = '0px 0px 4px 5px rgba(54,239,72,0.8)';
+      widget.style.backgroundColor = '#ffffff';
+      return false}
+    
+    function backlight (widget)
+     {widget.style.boxShadow = 'none';
+      widget.style.backgroundColor = '#eeeeee';
+      return true}
+    
+    //------------------------------------------------------------------------------
+    
+    var playing = false;
+    
+    function dostep ()
+     {document.getElementById('step').disabled=true;
+      document.getElementById('play').disabled=true;
+      document.getElementById('pause').disabled=true;
+      document.getElementById('reset').disabled=true;
+      fullreact(seq('click',bestrandom()));
+      document.getElementById('step').disabled=false;
+      document.getElementById('play').disabled=false;
+      document.getElementById('pause').disabled=true;
+      document.getElementById('reset').disabled=false;
+      return true}
+    
+    function doplay ()
+     {document.getElementById('step').disabled=true;
+      document.getElementById('play').disabled=true;
+      document.getElementById('pause').disabled=true;
+      document.getElementById('reset').disabled=true;
+      playing = true;
+      run();
+      document.getElementById('step').disabled=true;
+      document.getElementById('play').disabled=true;
+      document.getElementById('pause').disabled=false;
+      document.getElementById('reset').disabled=true;
+      return true}
+    
+    function dopause ()
+     {document.getElementById('step').disabled=true;
+      document.getElementById('play').disabled=true;
+      document.getElementById('pause').disabled=true;
+      document.getElementById('reset').disabled=true;
+      playing = false;
+      document.getElementById('step').disabled=false;
+      document.getElementById('play').disabled=false;
+      document.getElementById('pause').disabled=true;
+      document.getElementById('reset').disabled=false;
+      return true}
+    
+    function doreset ()
+     {definefacts(lambda,readdata(document.getElementById('lambda').textContent));
+      populatesheet();
+      return true}
+    
+    function run ()
+     {if (playing)
+         {fullreact(seq('click',bestrandom()));
+          if (!compfindp('terminal',lambda,library)) {setTimeout(run,1000)}};
+      return true}
+    
+    function bestrandom ()
+     {var actions = compfinds(read('cell(M,N)'),read('legal(M,N)'),lambda,library);
+      var ind = Math.floor(Math.random()*actions.length);
+      return actions[ind]}
+    
+    //------------------------------------------------------------------------------
+    // End
+    //------------------------------------------------------------------------------
+      </script>
 </head>
 
 <!--=========================================================================-->
@@ -27,7 +155,6 @@
     </tr>
   </table>
 </center>
-
 
 <table border='0'>
   <tr>
@@ -588,8 +715,6 @@
   <tr>
     <td>
         <textarea name='rules' style='display:none;font-family:courier;background-color:#eeeeee;outline:0;border-radius:0px 0px 4px 4px;' rows='48' cols='62' oninput='doopen(this)'>
-        click(cell(0,0)) :: style(cell(0, 0), background-color, X) ==> style(cell(0, 0), background-color, black)
-        click(cell(0,0)) :: style(cell(0, 0), background-color, X) ==> ~style(cell(0, 0), background-color, X)
         </textarea>
     </td>
   </tr>
@@ -604,20 +729,23 @@
 
 <textarea id='library' style='display:none;width:800px;font-family:courier;display:none' rows='20'>
   cell(0, 0)
-  style(cell(0, 0), background-color, green)
+
+  style(cell(X, Y), background-color, transparent) :- satisfied(X, Y)
+% transform cell(a, b, c, red) to cell(a, b, c, transparent)
+
+% style(cell(X, Y, Z, C), background-color, C) :- 
+% Use the semantic worksheets model (for the MVC design pattern) 
+
+click(cell(X,Y)) :: ~satisfied(X, Y) ==> satisfied(X, Y)
+
 </textarea>
 
 <!--=======================================================================-->
 
 <textarea id='lambda' type='text/hrf' style='display:none'>
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Lambda
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+style(cell(0, 0), background-color, red)
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% End of Rules
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 </textarea>
 
 <!--=========================================================================-->
