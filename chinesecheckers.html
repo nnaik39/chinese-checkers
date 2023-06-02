@@ -755,18 +755,18 @@ click(cell(X,Y,Z)) :: hasColor(X,Y,Z,A) & control(C) & same(A,C) ==> selectedCel
 click(cell(X,Y,Z)) :: selectedCell(A,B,C) ==> ~selectedCell(A,B,C)
 
 %move a green piece 
-click(cell(X,Y,Z)) :: (validMove(X,Y,Z) | validJump(X,Y,Z)) & control(green) & selectedCell(I,J,K) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) ==>
+click(cell(X,Y,Z)) :: (validMove(X,Y,Z) | validJump(X,Y,Z)) & control(green) & selectedCell(I,J,K) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) & innerhtml(control, CTRL) ==>
 style(cell(X,Y,Z), background-color, L) & ~style(cell(X,Y,Z), background-color, A)
  & style(cell(I,J,K), background-color, A) & ~style(cell(I,J,K), background-color, L)
  & hasColor(X,Y,Z,L) & ~hasColor(X,Y,Z,A)  & hasColor(I,J,K,A) & ~hasColor(I,J,K,L)
- & control(red) & ~control(green)
+ & control(red) & ~control(green) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: red")
 
  %move a red piece
- click(cell(X,Y,Z)) :: (validMove(X,Y,Z) | validJump(X,Y,Z)) & control(red) & selectedCell(I,J,K) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) ==>
+ click(cell(X,Y,Z)) :: (validMove(X,Y,Z) | validJump(X,Y,Z)) & control(red) & selectedCell(I,J,K) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) & innerhtml(control, CTRL) ==>
 style(cell(X,Y,Z), background-color, L) & ~style(cell(X,Y,Z), background-color, A)
  & style(cell(I,J,K), background-color, A) & ~style(cell(I,J,K), background-color, L)
  & hasColor(X,Y,Z,L) & ~hasColor(X,Y,Z,A)  & hasColor(I,J,K,A) & ~hasColor(I,J,K,L)
- & control(green) & ~control(red)
+ & control(green) & ~control(red) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: green")
  
 
 </textarea>
@@ -876,6 +876,8 @@ player(red)
 player(green)
 
 control(red)
+
+innerhtml(control, "Player: red")
 
 </textarea>
 
