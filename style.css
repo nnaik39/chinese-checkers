@@ -17,7 +17,7 @@
 
 .greenMarker {
   border-radius:50%;
-  border-color:green;
+  background-color:green;
 }
 
 .yellowMarker {
