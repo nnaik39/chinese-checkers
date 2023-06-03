@@ -160,6 +160,9 @@
   <tr>
     <td colspan='3' align='center'>
       <span id='socialreward'>0</span><br/>
+      <span id='control' style='font-size:18px;color:#666666'>Player: red</span>
+      <br/>
+      <input id='doneWithMove' type='button' value='Done With Move' onclick='modbutton(this)'/>
     </td>
   </tr>
   <tr>
@@ -172,7 +175,7 @@
       <br/>
     </td>
     <td>
-      <table cellspacing='2' border='4'>
+      <table cellspacing='2' border='4' bgcolor='#FFF5E5'>
         <tr>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
         </tr>
@@ -680,7 +683,6 @@
   </tr>
   <tr>
     <td colspan='3' align='center'>
-<span id='control' style='font-size:18px;color:#666666'>Player: red</span>
     </td>
   </tr>
 </table>
@@ -801,6 +803,17 @@ style(cell(X,Y,Z), background-color, L) & ~style(cell(X,Y,Z), background-color, 
  %click(cell(X,Y,Z)) :: pieceJumped(true) & control(red) ==> control(green) & ~control(red)
  %click(cell(X,Y,Z)) :: pieceJumped(true) & control(green) ==> control(red) & ~control(green)
 
+% pass control when done with turn (red to green)
+click(doneWithMove) :: control(red) & innerhtml(control, CTRL) ==> control(green) & ~control(red) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: green")
+
+% pass control when done with turn (green to red)
+click(doneWithMove) :: control(green) & innerhtml(control, CTRL) ==> control(red) & ~control(green) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: red")
+
+% make sure you have only moved 1 piece during your turn
+
+ % checks if a player won
+ %click(cell(X,Y,Z)) :- 
+ 
  
 
 </textarea>
