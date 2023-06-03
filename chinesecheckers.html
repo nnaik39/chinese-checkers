@@ -553,7 +553,7 @@
   <tr>
     <td colspan='3' align='center'>
       <span style='font-size:18px;color:#666666'>Player: </span>
-<span id='currentPlayer' style='font-size:18px;color:#666666'> </span>
+      <span id='currentPlayer' style='font-size:18px;color:#666666'> </span>
     </td>
   </tr>
 </table>
@@ -594,48 +594,47 @@
   
 %%%% MODEL
 
-%check if a move is valid
+% check if a move is valid
 validMove(X,Y,Z) :- selectedCell(I,J,K) & evaluate(abs(minus(X,I)), A) & leq(A,1) & evaluate(abs(minus(Y,J)), B) & leq(B,1) & evaluate(abs(minus(Z,K)), C) & leq(C,1)
 
-%perform jump to the left
+% perform jump to the left
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,-2) & evaluate(minus(Y,R), B) & same(B,0) & evaluate(minus(Z,S), C) & same(C,2) & evaluate(minus(Q,1), COORD1) & evaluate(plus(S,1), COORD2) & hasColor(COORD1,R,COORD2, COLOR) & distinct(COLOR,white))
 
-%perform jump to the right
+% perform jump to the right
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,2) & evaluate(minus(Y,R), B) & same(B,0) & evaluate(minus(Z,S), C) & same(C,-2) & evaluate(plus(Q,1), COORD1) & evaluate(minus(S,1), COORD2) & hasColor(COORD1,R,COORD2, COLOR) & distinct(COLOR,white))
 
-%perform top left jump
+% perform top left jump
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,0) & evaluate(minus(Y,R), B) & same(B,-2) & evaluate(minus(Z,S), C) & same(C,2) & evaluate(minus(R,1), COORD1) & evaluate(plus(S,1), COORD2) & hasColor(Q,COORD1,COORD2, COLOR) & distinct(COLOR,white))
 
-%perform top right jump
+% perform top right jump
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,2) & evaluate(minus(Y,R), B) & same(B,-2) & same(S,Z) & evaluate(plus(Q,1), COORD1) & evaluate(minus(R,1), COORD2) & hasColor(COORD1, COORD2, S, COLOR) & distinct(COLOR,white))
 
-%perform bottom left jump
+% perform bottom left jump
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,-2) & evaluate(minus(Y,R), B) & same(B,2) & same(S,Z) & evaluate(minus(Q,1), COORD1) & evaluate(plus(R,1), COORD2) & hasColor(COORD1, COORD2, S, COLOR) & distinct(COLOR,white))
 
-%perform bottom right jump
+% perform bottom right jump
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) & evaluate(minus(Z,S), B) & same(B,-2) & same(Q,X) & evaluate(plus(R,1), COORD1) & evaluate(minus(S,1), COORD2) & hasColor(Q, COORD1, COORD2, COLOR) & distinct(COLOR,white))
 
-%if we click on a piece and theres no already selected piece, mark this piece as selected and remove other selected pieces
+% if we click on a piece and theres no already selected piece, mark this piece as selected and remove other selected pieces
 click(cell(X,Y,Z)) :: control(C) & hasColor(X,Y,Z,C) ==> selectedCell(X,Y,Z)
 click(cell(X,Y,Z)) :: selectedCell(A,B,C) ==> ~selectedCell(A,B,C)
 
-%move a piece given no piece has jumped on this turn
-click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & nextPlayer(P, N) & selectedCell(I,J,K) & jumpingPiece(none)
+% move a piece given no piece has jumped on this turn
+click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & jumpingPiece(none)
 & hasColor(X,Y,Z, white) & hasColor(I,J,K,P) ==>
  hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
-  & control(N) & ~control(P)
 
-%move a piece once a piece has jumped on current turn
-% click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K)  & jumpingPiece(I,J,K) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) & innerhtml(control, CTRL) ==>
-% hasColor(X,Y,Z,L) & ~hasColor(X,Y,Z,A)  & hasColor(I,J,K,A) & ~hasColor(I,J,K,L)
-% & control(red) & ~control(green) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: red") & ~jumpingPiece(I,J,K) & jumpingPiece(none)
+% move a piece once a piece has jumped on current turn
+click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & jumpingPiece(I,J,K)
+& hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
+ hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
+ & ~jumpingPiece(I,J,K) & jumpingPiece(none)
 
- %jump a piece 
-% click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(green) & selectedCell(I,J,K) & ( jumpingPiece(none) | jumpingPiece(I,J,K) ) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) ==>
-% & hasColor(X,Y,Z,L) & ~hasColor(X,Y,Z,A)  & hasColor(I,J,K,A) & ~hasColor(I,J,K,L) & jumpingPiece(X,Y,Z) & ~jumpingPiece(none) & ~jumpingPiece(I,J,K)
-
- %click(cell(X,Y,Z)) :: pieceJumped(true) & control(red) ==> control(green) & ~control(red)
- %click(cell(X,Y,Z)) :: pieceJumped(true) & control(green) ==> control(red) & ~control(green)
+% jump a piece 
+click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(P) & selectedCell(I,J,K) &
+(jumpingPiece(none) | jumpingPiece(I,J,K)) & hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
+hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
+& jumpingPiece(X,Y,Z) & ~jumpingPiece(none) & ~jumpingPiece(I,J,K)
 
  %%%% VIEW
 
