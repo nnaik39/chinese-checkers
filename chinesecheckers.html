@@ -649,7 +649,7 @@ click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & nextPlayer(P, N) & selecte
  
  innerhtml(currentPlayer, P) :- control(P)
 
-% change control after player's turn is over (red -> green)
+% change control after player's turn is over
 click(doneWithMove) :: control(P) & nextPlayer(P, N) ==> ~control(P) & control(N) 
 
 </textarea>
