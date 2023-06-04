@@ -31,7 +31,6 @@
 <table border='0'>
   <tr>
     <td colspan='3' align='center'>
-      <span id='socialreward'>0</span><br/>
       <span style='font-size:18px;color:#666666'>Player: </span>
       <span id='currentPlayer' style='font-size:18px;color:#666666'>Player: red</span>
       <br/>
@@ -39,14 +38,6 @@
     </td>
   </tr>
   <tr>
-    <td align='center'>
-      <span id='indyreward'>0</span><br/>
-      <table cellspacing='2' border='4'>
-        <tr><td id='indygold' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-        <tr><td id='indydiamond' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-      </table>
-      <br/>
-    </td>
     <td>
       <table cellspacing='2' border='4' bgcolor='#FFF5E5'>
         <tr>
@@ -545,14 +536,6 @@
 
     </table>
     </td>
-    <td align='center'>
-      <span id='larareward'>0</span><br/>
-      <table cellspacing='2' border='4'>
-        <tr><td id='laragold' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-        <tr><td id='laradiamond' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-      </table>
-      <br/>
-    </td>
   </tr>
   <tr>
     <td colspan='3' align='center'>
@@ -638,6 +621,9 @@ click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
 
 % change control after player's turn is over
 click(doneWithMove) :: control(P) & nextPlayer(P, N) & currentPiece(A,B,C) ==> ~control(P) & control(N) & ~currentPiece(A, B, C) & currentPiece(none)
+
+% change control after player's turn is over
+click(doneWithMove) :: control(P) & nextPlayer(P, N) ==> ~control(P) & control(N) 
 
  %%%% VIEW
 
