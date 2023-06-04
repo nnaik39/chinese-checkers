@@ -31,7 +31,6 @@
 <table border='0'>
   <tr>
     <td colspan='3' align='center'>
-      <span id='socialreward'>0</span><br/>
       <span style='font-size:18px;color:#666666'>Player: </span>
       <span id='currentPlayer' style='font-size:18px;color:#666666'>Player: red</span>
       <br/>
@@ -39,14 +38,6 @@
     </td>
   </tr>
   <tr>
-    <td align='center'>
-      <span id='indyreward'>0</span><br/>
-      <table cellspacing='2' border='4'>
-        <tr><td id='indygold' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-        <tr><td id='indydiamond' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-      </table>
-      <br/>
-    </td>
     <td>
       <table cellspacing='2' border='4' bgcolor='#FFF5E5'>
         <tr>
@@ -545,14 +536,6 @@
 
     </table>
     </td>
-    <td align='center'>
-      <span id='larareward'>0</span><br/>
-      <table cellspacing='2' border='4'>
-        <tr><td id='laragold' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-        <tr><td id='laradiamond' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-      </table>
-      <br/>
-    </td>
   </tr>
   <tr>
     <td colspan='3' align='center'>
@@ -638,8 +621,11 @@ click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(P) & selectedCell(I,J,K) &
 hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
 & jumpingPiece(X,Y,Z) & ~jumpingPiece(none) & ~jumpingPiece(I,J,K)
 
-% change control after player's turn is over (red -> green)
+% change control after player's turn is over (jumping piece)
 click(doneWithMove) :: control(P) & nextPlayer(P, N) & jumpingPiece(A,B,C) ==> ~control(P) & control(N) & ~jumpingPiece(A, B, C) & jumpingPiece(none)
+
+% change control after player's turn is over
+click(doneWithMove) :: control(P) & nextPlayer(P, N) ==> ~control(P) & control(N) 
 
  %%%% VIEW
 
@@ -650,9 +636,6 @@ click(doneWithMove) :: control(P) & nextPlayer(P, N) & jumpingPiece(A,B,C) ==> ~
  style(cell(X, Y, Z), border-width, 1px) :- ~selectedCell(X, Y, Z)
  
  innerhtml(currentPlayer, P) :- control(P)
-
-% change control after player's turn is over
-click(doneWithMove) :: control(P) & nextPlayer(P, N) ==> ~control(P) & control(N) 
 
 </textarea>
 
