@@ -606,25 +606,23 @@ validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) &
 click(cell(X,Y,Z)) :: control(C) & hasColor(X,Y,Z,C) ==> selectedCell(X,Y,Z)
 click(cell(X,Y,Z)) :: selectedCell(A,B,C) ==> ~selectedCell(A,B,C)
 
-% move a piece given no piece has jumped on this turn
-click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & jumpingPiece(none)
+% move a piece given no piece has moved or jumped on this turn
+click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & currentPiece(none)
 & hasColor(X,Y,Z, white) & hasColor(I,J,K,P) ==>
- hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
-
-% move a piece once a piece has jumped on current turn
-click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & jumpingPiece(I,J,K)
-& hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
- hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
- & ~jumpingPiece(I,J,K) & jumpingPiece(none)
+ hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & currentPiece(X, Y, Z)
+ & ~currentPiece(none)
 
 % jump a piece 
 click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(P) & selectedCell(I,J,K) &
-(jumpingPiece(none) | jumpingPiece(I,J,K)) & hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
+(currentPiece(none) | currentPiece(I,J,K)) & hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
 hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
-& jumpingPiece(X,Y,Z) & ~jumpingPiece(none) & ~jumpingPiece(I,J,K)
+& currentPiece(X,Y,Z) & ~currentPiece(none) & ~currentPiece(I,J,K)
 
-% change control after player's turn is over (jumping piece)
-click(doneWithMove) :: control(P) & nextPlayer(P, N) & jumpingPiece(A,B,C) ==> ~control(P) & control(N) & ~jumpingPiece(A, B, C) & jumpingPiece(none)
+% Check that the cell we click on is the current piece (or a new one, if no current piece is assigned yet)
+click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
+
+% change control after player's turn is over
+click(doneWithMove) :: control(P) & nextPlayer(P, N) & currentPiece(A,B,C) ==> ~control(P) & control(N) & ~currentPiece(A, B, C) & currentPiece(none)
 
 % change control after player's turn is over
 click(doneWithMove) :: control(P) & nextPlayer(P, N) ==> ~control(P) & control(N) 
@@ -1043,7 +1041,7 @@ nextPlayer(yellow, red)
 
 control(red)
 
-jumpingPiece(none)
+currentPiece(none)
 
 gameOver(false)
 
