@@ -36,7 +36,7 @@
       <br/>
       <br />
       <input id='doneWithMove' class='topButtons' type='button' value='Done With Move' onclick='modbutton(this)'/>
-      <input id='hint' class='topButtons' type='button' value='Hints' onclick='modbutton(this)'/>
+      <input id='hint' class='topButtons' type='button' value='Help' onclick='modbutton(this)'/>
     </td>
   </tr>
   <tr>
@@ -602,6 +602,9 @@ validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,-2) 
 % perform bottom right jump
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) & evaluate(minus(Z,S), B) & same(B,-2) & same(Q,X) & evaluate(plus(R,1), COORD1) & evaluate(minus(S,1), COORD2) & hasColor(Q, COORD1, COORD2, COLOR) & distinct(COLOR,white))
 
+% check for white cell (needed for guide button)
+white(X, Y, Z) :- ~hasColor(X,Y,Z,red) & ~hasColor(X,Y,Z,purple) & ~hasColor(X,Y,Z,blue) & ~hasColor(X,Y,Z,green) & ~hasColor(X,Y,Z,orange) & ~hasColor(X,Y,Z,yellow)
+
 % if we click on a piece and theres no already selected piece, mark this piece as selected and remove other selected pieces
 click(cell(X,Y,Z)) :: control(C) & hasColor(X,Y,Z,C) ==> selectedCell(X,Y,Z)
 click(cell(X,Y,Z)) :: selectedCell(A,B,C) ==> ~selectedCell(A,B,C)
@@ -639,7 +642,7 @@ click(hint) :: hintOn(true) ==> ~hintOn(true) & hintOn(false)
  style(cell(X, Y, Z), border-width, 2px) :- selectedCell(X, Y, Z)
  style(cell(X, Y, Z), border-color, C) :- ~selectedCell(X, Y, Z) & origColor(X, Y, Z, C)
  style(cell(X, Y, Z), border-width, 1px) :- ~selectedCell(X, Y, Z)
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & hasColor(X,Y,Z,white)
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z)
  
  innerhtml(currentPlayer, P) :- control(P)
 
