@@ -36,7 +36,7 @@
       <br/>
       <br />
       <input id='doneWithMove' class='topButtons' type='button' value='Done With Move' onclick='modbutton(this)'/>
-      <input id='hint' class='topButtons' type='button' value='Help' onclick='modbutton(this)'/>
+      <input id='hint' class='topButtons' type='button' value='Guide' onclick='modbutton(this)'/>
     </td>
   </tr>
   <tr>
@@ -642,8 +642,8 @@ click(hint) :: hintOn(true) ==> ~hintOn(true) & hintOn(false)
  style(cell(X, Y, Z), border-width, 2px) :- selectedCell(X, Y, Z)
  style(cell(X, Y, Z), border-color, C) :- ~selectedCell(X, Y, Z) & origColor(X, Y, Z, C)
  style(cell(X, Y, Z), border-width, 1px) :- ~selectedCell(X, Y, Z)
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z)
- 
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) | hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
+
  innerhtml(currentPlayer, P) :- control(P)
 
 </textarea>
