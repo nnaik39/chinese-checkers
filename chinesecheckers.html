@@ -7,139 +7,11 @@
   <link rel="stylesheet" href="style.css">
   <script type='text/javascript' src='http://epilog.stanford.edu/javascript/epilog.js'></script>
   <script type='text/javascript' src='http://worksheets.stanford.edu/javascript/worksheets.js'></script>
-  <script type='text/javascript'>
-    //------------------------------------------------------------------------------
-    // Code
-    //------------------------------------------------------------------------------
-    
-    var rules = [];
-    
-    function setup ()
-     {rules = readdata(document.getElementsByName('rules')[0].value);
-      var bases = readdata(document.getElementById('library').textContent);
-      definerules(library,rules.concat(bases));
-      populatesheet();
-      return true}
-    
-    function doopen ()
-     {var widget = document.getElementsByName('rules')[0];
-      var save = document.getElementById('save');
-      var back = document.getElementById('back');
-      highlight(widget);
-      save.removeAttribute('disabled');
-      back.removeAttribute('disabled');
-      return true}
-    
-    function doupdate ()
-     {var widget = document.getElementsByName('rules')[0];
-      var save = document.getElementById('save');
-      var back = document.getElementById('back');
-      var result = widget.value;
-      rules = readdata(result);
-      if (result.trim().length>0 && rules.length===0)
-         {alert('Syntax error.'); return false};
-      var bases = readdata(document.getElementById('library').textContent);
-      definerules(library,rules.concat(bases));
-      populatesheet();
-      backlight(widget);
-      save.setAttribute('disabled','true');
-      back.setAttribute('disabled','true');
-      return true}
-    
-    function dorevert ()
-     {var widget = document.getElementsByName('rules')[0];
-      var save = document.getElementById('save');
-      var back = document.getElementById('back');
-      widget.value = grindem(rules)
-      backlight(widget);
-      save.setAttribute('disabled','true');
-      back.setAttribute('disabled','true');
-      return true}
-    
-    function populatesheet ()
-     {var widgets = document.querySelectorAll('[id]');
-      for (var i=0; i<widgets.length; i++)
-          {populate(widgets[i])};
-      document.getElementsByName('facts')[0].value = grindem(lambda.sort());
-      reposition();
-      return true}
-    
-    function highlight (widget)
-     {widget.style.boxShadow = '0px 0px 4px 5px rgba(54,239,72,0.8)';
-      widget.style.backgroundColor = '#ffffff';
-      return false}
-    
-    function backlight (widget)
-     {widget.style.boxShadow = 'none';
-      widget.style.backgroundColor = '#eeeeee';
-      return true}
-    
-    //------------------------------------------------------------------------------
-    
-    var playing = false;
-    
-    function dostep ()
-     {document.getElementById('step').disabled=true;
-      document.getElementById('play').disabled=true;
-      document.getElementById('pause').disabled=true;
-      document.getElementById('reset').disabled=true;
-      fullreact(seq('click',bestrandom()));
-      document.getElementById('step').disabled=false;
-      document.getElementById('play').disabled=false;
-      document.getElementById('pause').disabled=true;
-      document.getElementById('reset').disabled=false;
-      return true}
-    
-    function doplay ()
-     {document.getElementById('step').disabled=true;
-      document.getElementById('play').disabled=true;
-      document.getElementById('pause').disabled=true;
-      document.getElementById('reset').disabled=true;
-      playing = true;
-      run();
-      document.getElementById('step').disabled=true;
-      document.getElementById('play').disabled=true;
-      document.getElementById('pause').disabled=false;
-      document.getElementById('reset').disabled=true;
-      return true}
-    
-    function dopause ()
-     {document.getElementById('step').disabled=true;
-      document.getElementById('play').disabled=true;
-      document.getElementById('pause').disabled=true;
-      document.getElementById('reset').disabled=true;
-      playing = false;
-      document.getElementById('step').disabled=false;
-      document.getElementById('play').disabled=false;
-      document.getElementById('pause').disabled=true;
-      document.getElementById('reset').disabled=false;
-      return true}
-    
-    function doreset ()
-     {definefacts(lambda,readdata(document.getElementById('lambda').textContent));
-      populatesheet();
-      return true}
-    
-    function run ()
-     {if (playing)
-         {fullreact(seq('click',bestrandom()));
-          if (!compfindp('terminal',lambda,library)) {setTimeout(run,1000)}};
-      return true}
-    
-    function bestrandom ()
-     {var actions = compfinds(read('cell(M,N)'),read('legal(M,N)'),lambda,library);
-      var ind = Math.floor(Math.random()*actions.length);
-      return actions[ind]}
-    
-    //------------------------------------------------------------------------------
-    // End
-    //------------------------------------------------------------------------------
-      </script>
 </head>
 
 <!--=========================================================================-->
 
-<body bgcolor='#ADD8E6' onload='initialize();'>
+<body bgcolor='#ffffff' onload='initialize();'>
   <center>
     <table width='720' bgcolor='#ffffff'>
       <tr>
@@ -151,7 +23,7 @@
   <br/>
   <table>
     <tr>
-      <td style='font-size:36px;cursor:pointer' onclick='display("introduction")'>Chinese Checkers</td>
+      <td class='title' onclick='display("introduction")'>Chinese Checkers</td>
     </tr>
   </table>
 </center>
@@ -159,20 +31,108 @@
 <table border='0'>
   <tr>
     <td colspan='3' align='center'>
-      <span id='socialreward'>0</span><br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>What colors? </span>
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 1 </span>
+      <select id='playerColor(first)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 2 </span>
+      <select id='playerColor(second)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+      <br/>
+      <br/>
+
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 3 </span>
+      <select id='playerColor(third)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 4 </span>
+      <select id='playerColor(fourth)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 5 </span>
+      <select id='playerColor(fifth)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 6 </span>
+      <select id='playerColor(sixth)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+
+      <br/>
+      <br/>
+      <input id='startGame' class='topButtons' type='button' value='Start Game' onclick='modbutton(this)'/>
+      <br/>
+      <br />
+
+      <span id='playerHeader' style='font-size:18px;color:#666666;font-family: sans-serif;'>Player: </span>
+      <span id='currentPlayer' style='font-size:18px;color:#666666;font-family: sans-serif;'></span>
+      <br/>
+      <br />
+      <input id='doneWithMove' class='topButtons' type='button' value='Done With Move' onclick='modbutton(this)'/>
+      <input id='hint' class='topButtons' type='button' value='Guide' onclick='modbutton(this)'/>
     </td>
   </tr>
+
   <tr>
-    <td align='center'>
-      <span id='indyreward'>0</span><br/>
-      <table cellspacing='2' border='4'>
-        <tr><td id='indygold' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-        <tr><td id='indydiamond' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-      </table>
-      <br/>
-    </td>
     <td>
-      <table cellspacing='2' border='4'>
+      <table cellspacing='2' border='4' bgcolor='#FFF5E5' >
         <tr>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
         </tr>
@@ -283,13 +243,13 @@
         </tr>
         <tr>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-4, -4, 8, yellow, yellow)" class="yellowMarker" width='60' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-4, -4, 8)" class="yellowMarker" width='60' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-3, -4, 7, yellow, yellow)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-3, -4, 7)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-2, -4, 6, yellow, yellow)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-2, -4, 6)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-1, -4, 5, yellow, yellow)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-1, -4, 5)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(0, -4, 4)" class="emptyCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
@@ -301,13 +261,13 @@
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(4, -4, 0)" class="emptyCell" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(5, -4, -1, purple, purple)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(5, -4, -1)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(6, -4, -2, purple, purple)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(6, -4, -2)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(7, -4, -3, purple, purple)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(7, -4, -3)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(8, -4, -4, purple, purple)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(8, -4, -4)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
 
         </tr>
@@ -317,11 +277,11 @@
         <tr>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-4, -3, 7, yellow, yellow)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-4, -3, 7)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-3, -3, 6, yellow, yellow)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-3, -3, 6)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-2, -3, 5, yellow, yellow)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-2, -3, 5)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(-1, -3, 4)" class="emptyCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
@@ -335,11 +295,11 @@
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(4, -3, -1)" class="emptyCell" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(5, -3, -2, purple, purple)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(5, -3, -2)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(6, -3, -3, purple, purple)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(6, -3, -3)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(7, -3, -4, purple, purple)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(7, -3, -4)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
         </tr>
         <tr>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
@@ -348,9 +308,9 @@
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-4, -2, 6, yellow, yellow)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-4, -2, 6)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-3, -2, 5, yellow, yellow)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-3, -2, 5)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(-2, -2, 4)" class="emptyCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
@@ -366,9 +326,9 @@
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(4, -2, -2)" class="emptyCell" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(5, -2, -3, purple, purple)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(5, -2, -3)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(6, -2, -4, purple, purple)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(6, -2, -4)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
 
         </tr>
         <tr>
@@ -379,7 +339,7 @@
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-4, -1, 5, yellow, yellow)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-4, -1, 5)" class="yellowMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(-3, -1, 4)" class="emptyCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
@@ -397,7 +357,7 @@
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(4, -1, -3)" class="emptyCell" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(5, -1, -4, purple, purple)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(5, -1, -4)" class="purpleMarker" onclick='modbutton(this)'>&nbsp;</td>
 
         </tr>
         <tr>
@@ -440,7 +400,7 @@
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-5, 1, 4, orange, orange)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-5, 1, 4)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(-4, 1, 3)" class="emptyCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
@@ -458,7 +418,7 @@
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(3, 1, -4)" class="emptyCell" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(4, 1, -5, blue, blue)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(4, 1, -5)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
@@ -470,9 +430,9 @@
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-6, 2, 4, orange, orange)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-6, 2, 4)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-5, 2, 3, orange, orange)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-5, 2, 3)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(-4, 2, 2)" class="emptyCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
@@ -488,9 +448,9 @@
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(2, 2, -4)" class="emptyCell" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(3, 2, -5, blue, blue)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(3, 2, -5)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(4, 2, -6, blue, blue)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(4, 2, -6)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
 
         </tr>
         <tr>
@@ -500,11 +460,11 @@
         <tr>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-7, 3, 4, orange, orange)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-7, 3, 4)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-6, 3, 3, orange, orange)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-6, 3, 3)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-5, 3, 2, orange, orange)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-5, 3, 2)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(-4, 3, 1)" class="emptyCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
@@ -518,11 +478,11 @@
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(1, 3, -4)" class="emptyCell" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(2, 3, -5, blue, blue)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(2, 3, -5)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(3, 3, -6, blue, blue)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(3, 3, -6)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(4, 3, -7, blue, blue)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(4, 3, -7)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
 
         </tr>
         <tr>
@@ -531,13 +491,13 @@
 
         <tr>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-8, 4, 4, orange, orange)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-8, 4, 4)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-7, 4, 3, orange, orange)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-7, 4, 3)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-6, 4, 2, orange, orange)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-6, 4, 2)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(-5, 4, 1, orange, orange)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(-5, 4, 1)" class="orangeMarker" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(-4, 4, 0)" class="emptyCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" width='60' onclick='modbutton(this)'>&nbsp;</td>
@@ -549,13 +509,13 @@
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
           <td id="cell(0, 4, -4)"  class="emptyCell" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(1, 4, -5, blue, blue)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(1, 4, -5)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(2, 4, -6, blue, blue)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(2, 4, -6)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(3, 4, -7, blue, blue)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(3, 4, -7)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
           <td class="invisibleCell" onclick='modbutton(this)'>&nbsp;</td>
-          <td id="cell(4, 4, -8, blue, blue)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
+          <td id="cell(4, 4, -8)" class="blueMarker" onclick='modbutton(this)'>&nbsp;</td>
 
         </tr>
         <tr>
@@ -669,31 +629,12 @@
 
     </table>
     </td>
-    <td align='center'>
-      <span id='larareward'>0</span><br/>
-      <table cellspacing='2' border='4'>
-        <tr><td id='laragold' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-        <tr><td id='laradiamond' width='60' height='60' align='center' valign='center'>&nbsp;</td></tr>
-      </table>
-      <br/>
-    </td>
   </tr>
   <tr>
     <td colspan='3' align='center'>
-<span id='control' style='font-size:18px;color:#666666'>Player: red</span>
     </td>
   </tr>
 </table>
-</center>
-
-<center>
-  <br/>
-  <input id='step' type='button' value='Step' onclick='dostep()'/>
-  <input id='play' type='button' value='Play' onclick='doplay()'/>
-  <input id='pause' type='button' value='Pause' onclick='dopause()' disabled='true'/>
-  <input id='reset' type='button' value='Reset' onclick='doreset()'/>
-  <br/>
-  <br/>
 </center>
 
         </td>
@@ -729,98 +670,113 @@
 
 <textarea id='library' style='display:none;width:800px;font-family:courier;display:none' rows='20'>
   
-%check if a move is valid
+%%%% MODEL
+
+% check if a move is valid
 validMove(X,Y,Z) :- selectedCell(I,J,K) & evaluate(abs(minus(X,I)), A) & leq(A,1) & evaluate(abs(minus(Y,J)), B) & leq(B,1) & evaluate(abs(minus(Z,K)), C) & leq(C,1)
 
-%perform jump to the left
+% perform jump to the left
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,-2) & evaluate(minus(Y,R), B) & same(B,0) & evaluate(minus(Z,S), C) & same(C,2) & evaluate(minus(Q,1), COORD1) & evaluate(plus(S,1), COORD2) & hasColor(COORD1,R,COORD2, COLOR) & distinct(COLOR,white))
 
-%perform jump to the right
+% perform jump to the right
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,2) & evaluate(minus(Y,R), B) & same(B,0) & evaluate(minus(Z,S), C) & same(C,-2) & evaluate(plus(Q,1), COORD1) & evaluate(minus(S,1), COORD2) & hasColor(COORD1,R,COORD2, COLOR) & distinct(COLOR,white))
 
-%perform top left jump
+% perform top left jump
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,0) & evaluate(minus(Y,R), B) & same(B,-2) & evaluate(minus(Z,S), C) & same(C,2) & evaluate(minus(R,1), COORD1) & evaluate(plus(S,1), COORD2) & hasColor(Q,COORD1,COORD2, COLOR) & distinct(COLOR,white))
 
-%perform top right jump
+% perform top right jump
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,2) & evaluate(minus(Y,R), B) & same(B,-2) & same(S,Z) & evaluate(plus(Q,1), COORD1) & evaluate(minus(R,1), COORD2) & hasColor(COORD1, COORD2, S, COLOR) & distinct(COLOR,white))
 
-%perform bottom left jump
+% perform bottom left jump
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,-2) & evaluate(minus(Y,R), B) & same(B,2) & same(S,Z) & evaluate(minus(Q,1), COORD1) & evaluate(plus(R,1), COORD2) & hasColor(COORD1, COORD2, S, COLOR) & distinct(COLOR,white))
 
-%perform bottom right jump
-validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) & evaluate(minus(Z,S), B) & same(B,-2) & same(Q,X) & evaluate(plus(R,1), COORD1) & evaluate(minus(S,1), COORD2) & hasColor(Q, COORD1, COORD2, COLOR) & distinct(COLOR,white))
+% perform bottom right jump
+validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) & evaluate(minus(Z,S), B) & same(B,-2) & same(Q,X) & evaluate(plus(R,1), COORD1) & evaluate(minus(S,1), COORD2))
 
-%if we click on a piece and theres no already selected piece, mark this piece as selected and remove other selected pieces
-click(cell(X,Y,Z)) :: hasColor(X,Y,Z,A) & control(C) & same(A,C) ==> selectedCell(X,Y,Z)
+% check for white cell (needed for guide button)
+white(X, Y, Z) :- ~hasColor(X,Y,Z,red) & ~hasColor(X,Y,Z,purple) & ~hasColor(X,Y,Z,blue) & ~hasColor(X,Y,Z,green) & ~hasColor(X,Y,Z,orange) & ~hasColor(X,Y,Z,yellow)
+
+% if we click on a piece and theres no already selected piece, mark this piece as selected and remove other selected pieces
+click(cell(X,Y,Z)) :: control(C) & hasColor(X,Y,Z,C) ==> selectedCell(X,Y,Z)
 click(cell(X,Y,Z)) :: selectedCell(A,B,C) ==> ~selectedCell(A,B,C)
 
-%checkIfJump(X,Y,Z) :: validJump(X,Y,Z) & control(red) & innerhtml(control, CTRL) ==> control(green) & ~control(red) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: green")
-%checkIfJump(X,Y,Z) :: validJump(X,Y,Z) & control(green) & innerhtml(control, CTRL) ==> control(red) & ~control(green) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: red")
+% move a piece given no piece has moved or jumped on this turn
+
+%click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & currentPiece(none)
+%& hasColor(X,Y,Z, white) & hasColor(I,J,K,P) ==>
+% hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & currentPiece(X, Y, Z)
+% & ~currentPiece(none)
+
+click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & currentPiece(none) 
+& hasColor(X,Y,Z, white) & hasColor(I,J,K,P) ==>
+ hasColor(X,Y,Z,P) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & currentPiece(X, Y, Z)
+ & ~currentPiece(none)
+
+% jump a piece
+click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(P) & selectedCell(I,J,K) &
+(currentPiece(none) | currentPiece(I,J,K)) & hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
+hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
+& currentPiece(X,Y,Z) & ~currentPiece(none) & ~currentPiece(I,J,K) & cellShouldHaveMoved
+
+%check for win
+click(doneWithMove) :: control(P) & player(N, P) & oppositeFrom(N, O) & playerPiece(O, X,Y,Z) & hasColor(X,Y,Z,P) ==> gameOver & winner(P)
+
+% change control after player's turn is over
+click(doneWithMove) :: control(P) & nextPlayer(P, N) & currentPiece(A,B,C) ==> ~control(P) & control(N)
+& ~currentPiece(A, B, C) & currentPiece(none)
 
 
-%move a green piece given no piece has jumped on this turn
-click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(green) & selectedCell(I,J,K) & jumpingPiece(none) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) & innerhtml(control, CTRL) ==>
-style(cell(X,Y,Z), background-color, L) & ~style(cell(X,Y,Z), background-color, A)
- & style(cell(I,J,K), background-color, A) & ~style(cell(I,J,K), background-color, L)
- & hasColor(X,Y,Z,L) & ~hasColor(X,Y,Z,A)  & hasColor(I,J,K,A) & ~hasColor(I,J,K,L)
- & control(red) & ~control(green) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: red")
+% toggle between hints and no hints
+click(hint) :: hintOn(false) ==> ~hintOn(false) & hintOn(true) 
+click(hint) :: hintOn(true) ==> ~hintOn(true) & hintOn(false) 
 
- %move a green piece once a piece has jumped on current turn
- click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(green) & selectedCell(I,J,K)  & jumpingPiece(I,J,K) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) & innerhtml(control, CTRL) ==>
- style(cell(X,Y,Z), background-color, L) & ~style(cell(X,Y,Z), background-color, A)
-  & style(cell(I,J,K), background-color, A) & ~style(cell(I,J,K), background-color, L)
-  & hasColor(X,Y,Z,L) & ~hasColor(X,Y,Z,A)  & hasColor(I,J,K,A) & ~hasColor(I,J,K,L)
-  & control(red) & ~control(green) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: red") & ~jumpingPiece(I,J,K) & jumpingPiece(none)
+origColor(X,Y,Z,C) :- playerPiece(P,X,Y,Z) & player(P,C)
 
- %jump a green piece 
-click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(green) & selectedCell(I,J,K) & ( jumpingPiece(none) | jumpingPiece(I,J,K) ) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) ==>
-style(cell(X,Y,Z), background-color, L) & ~style(cell(X,Y,Z), background-color, A)
- & style(cell(I,J,K), background-color, A) & ~style(cell(I,J,K), background-color, L)
- & hasColor(X,Y,Z,L) & ~hasColor(X,Y,Z,A)  & hasColor(I,J,K,A) & ~hasColor(I,J,K,L) & jumpingPiece(X,Y,Z) & ~jumpingPiece(none) & ~jumpingPiece(I,J,K)
+select(playerColor(X), Y) :: ~value(playerColor(X), Y) ==> value(playerColor(X), Y) & player(X, Y)
+select(playerColor(X), Y) :: value(playerColor(X), A) ==> ~value(playerColor(X), A)
 
- %move a red piece given no piece has jumped on this turn
- click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(red) & selectedCell(I,J,K) & jumpingPiece(none) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) & innerhtml(control, CTRL) ==>
- style(cell(X,Y,Z), background-color, L) & ~style(cell(X,Y,Z), background-color, A)
-  & style(cell(I,J,K), background-color, A) & ~style(cell(I,J,K), background-color, L)
-  & hasColor(X,Y,Z,L) & ~hasColor(X,Y,Z,A)  & hasColor(I,J,K,A) & ~hasColor(I,J,K,L)
-  & control(green) & ~control(red) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: green")
+click(startGame) :: playerPiece(P,X,Y,Z) & player(P,C) ==> hasColor(X,Y,Z,C)
+click(startGame) :: player(first, S) ==> control(S)
+click(startGame) :: player(first, A) & player(second, B) & player(third, C) 
+& player(fourth, D) & player(fifth, E) & player(sixth, F) ==> nextPlayer(A,B) & nextPlayer(B,C) & nextPlayer(C,D)
+& nextPlayer(D,E) & nextPlayer(E,F) & nextPlayer(F,A)
+click(startGame) :: player(first,A) & player(fourth,B) ==> nextPlayer(A,B) & nextPlayer(B,A)
 
-  %move a red piece once a piece has jumped on current turn
-  click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(red) & selectedCell(I,J,K)  & jumpingPiece(I,J,K) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) & innerhtml(control, CTRL) ==>
-  style(cell(X,Y,Z), background-color, L) & ~style(cell(X,Y,Z), background-color, A)
-   & style(cell(I,J,K), background-color, A) & ~style(cell(I,J,K), background-color, L)
-   & hasColor(X,Y,Z,L) & ~hasColor(X,Y,Z,A)  & hasColor(I,J,K,A) & ~hasColor(I,J,K,L)
-   & control(green) & ~control(red) & ~innerhtml(control, CTRL) & innerhtml(control, "Player: green") & ~jumpingPiece(I,J,K) & jumpingPiece(none)
- 
-  %jump a red piece 
- click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(red) & selectedCell(I,J,K) & ( jumpingPiece(none) | jumpingPiece(I,J,K) ) & hasColor(X,Y,Z,A) & same(A, white) & hasColor(I,J,K,L) ==>
- style(cell(X,Y,Z), background-color, L) & ~style(cell(X,Y,Z), background-color, A)
-  & style(cell(I,J,K), background-color, A) & ~style(cell(I,J,K), background-color, L)
-  & hasColor(X,Y,Z,L) & ~hasColor(X,Y,Z,A)  & hasColor(I,J,K,A) & ~hasColor(I,J,K,L) & jumpingPiece(X,Y,Z) & ~jumpingPiece(none) & ~jumpingPiece(I,J,K)
+% Check that the cell we click on is the current piece (or a new one, if no current piece is assigned yet)
+click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
 
- %click(cell(X,Y,Z)) :: pieceJumped(true) & control(red) ==> control(green) & ~control(red)
- %click(cell(X,Y,Z)) :: pieceJumped(true) & control(green) ==> control(red) & ~control(green)
+%%%% VIEW
 
- 
+ style(cell(X, Y, Z), background-color, C) :- hasColor(X, Y, Z, C)
+ style(cell(X, Y, Z), border-color, lightblue) :- selectedCell(X, Y, Z)
+ style(cell(X, Y, Z), border-width, 2px) :- selectedCell(X, Y, Z)
+ style(cell(X, Y, Z), border-color, C) :- ~selectedCell(X, Y, Z) & origColor(X, Y, Z, C)
+ style(cell(X, Y, Z), border-width, 1px) :- ~selectedCell(X, Y, Z)
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) | hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
+
+ innerhtml(currentPlayer, P) :- ~gameOver & control(P)
+ innerhtml(playerHeader, P) :- gameOver & winner(P)
+ innerhtml(currentPlayer, "wins!!") :- gameOver
 
 </textarea>
 
 <!--=======================================================================-->
 
 <textarea id='lambda' type='text/hrf' style='display:none'>
-hasColor(4,-8,4, red)
 
-hasColor(3,-7,4, red)
-hasColor(4,-7,3, red)
+  playerPiece(first, 4,-8,4)
 
-hasColor(2,-6,4, red)
-hasColor(3,-6,3, red)
-hasColor(4,-6,2, red)
+playerPiece(first, 3,-7,4)
+playerPiece(first, 4,-7,3)
 
-hasColor(1,-5,4, red)
-hasColor(2,-5,3, red)
-hasColor(3,-5,2, red)
-hasColor(4,-5,1, red)
+playerPiece(first, 2,-6,4)
+playerPiece(first, 3,-6,3)
+playerPiece(first, 4,-6,2)
+
+playerPiece(first, 1,-5,4)
+playerPiece(first, 2,-5,3)
+playerPiece(first, 3,-5,2)
+playerPiece(first, 4,-5,1)
 
 hasColor(0, -4, 4, white)
 hasColor(1, -4, 3, white)
@@ -892,30 +848,158 @@ hasColor(-2,4,-2, white)
 hasColor(-1,4,-3, white)
 hasColor(0,4,-4, white)
 
-hasColor(-4, 5, -1, green)
-hasColor(-3,5,-2, green)
-hasColor(-2,5,-3, green)
-hasColor(-1,5,-4, green)
+hasColor(0, -4, 4, white)
+hasColor(1, -4, 3, white)
+hasColor(2, -4, 2, white)
+hasColor(3, -4, 1, white)
+hasColor(4, -4, 0, white)
 
-hasColor(-4,6,-2, green)
-hasColor(-3,6,-3, green)
-hasColor(-2,6,-4, green)
+hasColor(-1, -3, 4, white)
+hasColor(0, -3, 3, white)
+hasColor(1, -3, 2, white)
+hasColor(2, -3, 1, white)
+hasColor(3, -3, 0, white)
+hasColor(4, -3, -1, white)
 
-hasColor(-4,7,-3, green)
-hasColor(-3,7,-4, green)
+hasColor(-2,-2,4, white)
+hasColor(-1,-2,3, white)
+hasColor(0,-2,2, white)
+hasColor(1,-2,1, white)
+hasColor(2,-2,0, white)
+hasColor(3,-2,-1, white)
+hasColor(4,-2,-2, white)
 
-hasColor(-4,8,-4, green)
+hasColor(-3,-1,4, white)
+hasColor(-2,-1,3, white)
+hasColor(-1,-1,2, white)
+hasColor(0,-1,1, white)
+hasColor(1,-1,0, white)
+hasColor(2,-1,-1, white)
+hasColor(3,-1,-2, white)
+hasColor(4,-1,-3, white)
 
-player(red)
-player(green)
+hasColor(-4,0,4, white)
+hasColor(-3,0,3, white)
+hasColor(-2,0,2, white)
+hasColor(-1,0,1, white)
+hasColor(0,0,0, white)
+hasColor(1,0,-1, white)
+hasColor(2,0,-2, white)
+hasColor(3,0,-3, white)
+hasColor(4,0,-4, white)
 
-control(red)
+hasColor(-4,1,3, white)
+hasColor(-3,1,2, white)
+hasColor(-2,1,1, white)
+hasColor(-1,1,0, white)
+hasColor(0,1,-1, white)
+hasColor(1,1,-2, white)
+hasColor(2,1,-3, white)
+hasColor(3,1,-4, white)
 
-jumpingPiece(none)
+hasColor(-4,2,2, white)
+hasColor(-3,2,1, white)
+hasColor(-2,2,0, white)
+hasColor(-1,2,-1, white)
+hasColor(0,2,-2, white)
+hasColor(1,2,-3, white)
+hasColor(2,2,-4, white)
 
-innerhtml(control, "Player: red")
+hasColor(-4,3,1, white)
+hasColor(-3,3,0, white)
+hasColor(-2,3,-1, white)
+hasColor(-1,3,-2, white)
+hasColor(0,3,-3, white)
+hasColor(1,3,-4, white)
 
-gameOver(false)
+hasColor(-4, 4, 0, white)
+hasColor(-3,4,-1, white)
+hasColor(-2,4,-2, white)
+hasColor(-1,4,-3, white)
+hasColor(0,4,-4, white)
+
+playerPiece(second, 5, -4, -1)
+playerPiece(second, 6, -4, -2)
+playerPiece(second, 7, -4, -3)
+playerPiece(second, 8, -4, -4)
+
+playerPiece(second, 5, -3, -2)
+playerPiece(second, 6, -3, -3)
+playerPiece(second, 7, -3, -4)
+
+playerPiece(second, 5, -2, -3)
+playerPiece(second, 6, -2, -4)
+
+playerPiece(second, 5, -1, -4)
+
+playerPiece(fourth,-4, 5, -1)
+playerPiece(fourth,-3,5,-2)
+playerPiece(fourth,-2,5,-3)
+playerPiece(fourth,-1,5,-4)
+
+playerPiece(fourth,-4,6,-2)
+playerPiece(fourth,-3,6,-3)
+playerPiece(fourth,-2,6,-4)
+
+playerPiece(fourth,-4,7,-3)
+playerPiece(fourth,-3,7,-4)
+
+playerPiece(fourth,-4,8,-4)
+
+playerPiece(third, 1, 4, -5)
+playerPiece(third, 2, 4, -6)
+playerPiece(third, 3, 4, -7)
+playerPiece(third, 4, 4, -8)
+
+playerPiece(third, 2, 3, -5)
+playerPiece(third, 3, 3, -6)
+playerPiece(third, 4, 3, -7)
+
+playerPiece(third, 3, 2, -5)
+playerPiece(third, 4, 2, -6)
+
+playerPiece(third, 4, 1, -5)
+
+playerPiece(fifth, -8, 4, 4)
+playerPiece(fifth, -7, 4, 3)
+playerPiece(fifth, -6, 4, 2)
+playerPiece(fifth, -5, 4, 1)
+
+playerPiece(fifth, -7, 3, 4)
+playerPiece(fifth, -6, 3, 3)
+playerPiece(fifth, -5, 3, 2)
+
+playerPiece(fifth, -5, 2, 3)
+playerPiece(fifth, -6, 2, 4)
+
+playerPiece(fifth, -5, 1, 4)
+
+playerPiece(sixth, -4, -1, 5)
+playerPiece(sixth, -3, -2, 5)
+playerPiece(sixth, -2, -3, 5)
+playerPiece(sixth, -1, -4, 5)
+
+playerPiece(sixth, -4, -2, 6)
+playerPiece(sixth, -3, -3, 6)
+playerPiece(sixth, -2, -4, 6)
+
+playerPiece(sixth, -3, -4, 7)
+playerPiece(sixth, -4, -3, 7)
+
+playerPiece(sixth, -4, -4, 8)
+
+oppositeFrom(first, fourth)
+oppositeFrom(fourth,first)
+oppositeFrom(second,fifth)
+oppositeFrom(fifth,second)
+oppositeFrom(third,sixth)
+oppositeFrom(sixth,third)
+
+currentPiece(none)
+
+~gameOver
+
+hintOn(false)
 </textarea>
 
 <!--=========================================================================-->

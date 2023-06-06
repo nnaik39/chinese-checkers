@@ -4,7 +4,7 @@
 
 .redMarker {
   border-radius:50%;
-  background-color: red;
+/*   background-color: red;*/
 }
 
 .invisibleCell {
@@ -17,25 +17,39 @@
 
 .greenMarker {
   border-radius:50%;
-  background-color:green;
+/*  background-color:green; */
 }
 
 .yellowMarker {
   border-radius:50%;
-  background-color:yellow;
+/*  background-color:yellow; */
 }
 
 .blueMarker {
   border-radius:50%;
-  background-color:blue;
+/*  background-color:blue; */
 }
 
 .orangeMarker {
   border-radius:50%;
-  background-color: orange;
+/*  background-color: orange; */
 }
 
 .purpleMarker {
   border-radius:50%;
-  background-color:  purple;
+/*  background-color:  purple; */
+}
+
+.topButtons {
+  border-radius: 5px;
+  background-color:sienna;
+  cursor:pointer;
+  color: blanchedalmond;
+  margin-right: 3px;
+}
+
+.title {
+  font-size:36px;
+  cursor:pointer;
+  font-family: sans-serif;
 }
