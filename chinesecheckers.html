@@ -31,7 +31,7 @@
 <table border='0'>
   <tr>
     <td colspan='3' align='center'>
-      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>What colors? </span>
+      <span id='colorPicker' style='font-size:18px;color:#666666;font-family: sans-serif;'>What colors? </span>
       <br/>
       <br/>
       <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 1 </span>
@@ -117,6 +117,10 @@
 
       <br/>
       <br/>
+      <span id='colorError' style='font-size:18px;color:#c62929;font-family: sans-serif;'></span>
+      <br/>
+      <br />
+
       <input id='startGame' class='topButtons' type='button' value='Start Game' onclick='modbutton(this)'/>
       <br/>
       <br />
@@ -702,11 +706,6 @@ click(cell(X,Y,Z)) :: selectedCell(A,B,C) ==> ~selectedCell(A,B,C)
 
 % move a piece given no piece has moved or jumped on this turn
 
-%click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & currentPiece(none)
-%& hasColor(X,Y,Z, white) & hasColor(I,J,K,P) ==>
-% hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & currentPiece(X, Y, Z)
-% & ~currentPiece(none)
-
 click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & currentPiece(none) 
 & hasColor(X,Y,Z, white) & hasColor(I,J,K,P) ==>
  hasColor(X,Y,Z,P) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & currentPiece(X, Y, Z)
@@ -729,7 +728,7 @@ click(hint) :: hintOn(true) ==> ~hintOn(true) & hintOn(false)
 origColor(X,Y,Z,C) :- playerPiece(P,X,Y,Z) & player(P,C)
 
 select(playerColor(X), Y) :: ~value(playerColor(X), Y) ==> value(playerColor(X), Y) & player(X, Y)
-select(playerColor(X), Y) :: value(playerColor(X), A) ==> ~value(playerColor(X), A)
+select(playerColor(X), Y) :: value(playerColor(X), A) & player(X, A) ==> ~value(playerColor(X), A) & ~player(X, A)
 
 click(startGame) :: playerPiece(P,X,Y,Z) & player(P,C) ==> hasColor(X,Y,Z,C)
 click(startGame) :: player(first, S) ==> control(S)
@@ -739,6 +738,10 @@ click(startGame) :: player(first, A) & player(second, B) & player(third, C)
 
 % Check that the cell we click on is the current piece (or a new one, if no current piece is assigned yet)
 click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
+
+colorConflict :- player(A, B) & player(C, D) & distinct(A, C) & same(B, D)
+
+sixColorsAssigned :- evaluate(countofall([A,B], player(A, B)), C) & same(C, 6)
 
 %%%% VIEW
 
@@ -750,6 +753,20 @@ click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
  style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) | hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
 
  innerhtml(currentPlayer, P) :- control(P)
+
+ style(startGame, background-color, grey) :- colorConflict
+ style(startGame, background-color, brown) :- ~colorConflict
+
+ style(startGame, background-color, grey) :- ~sixColorsAssigned
+
+ innerhtml(colorError, "Please pick different colors for each player") :- colorConflict 
+ innerhtml(colorError, "") :- ~colorConflict 
+
+ attribute(startGame, disabled, true) :- colorConflict
+ attribute(startGame, disabled, false) :- ~colorConflict
+
+ attribute(startGame, disabled, true) :- ~sixColorsAssigned
+ attribute(startGame, disabled, false) :- sixColorsAssigned
 
 </textarea>
 
