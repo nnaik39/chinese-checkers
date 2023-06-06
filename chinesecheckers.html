@@ -605,21 +605,24 @@ validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) &
 % check for white cell (needed for guide button)
 white(X, Y, Z) :- ~hasColor(X,Y,Z,red) & ~hasColor(X,Y,Z,purple) & ~hasColor(X,Y,Z,blue) & ~hasColor(X,Y,Z,green) & ~hasColor(X,Y,Z,orange) & ~hasColor(X,Y,Z,yellow)
 
+% check if last move was a one step move
+lastMoveWasStep(X,Y,Z) :- lastMove(X,Y,Z) & currentPiece(I,J,K) & evaluate(abs(minus(X,I)), A) & leq(A,1) & evaluate(abs(minus(Y,J)), B) & leq(B,1) & evaluate(abs(minus(Z,K)), C) & leq(C,1)
+
 % if we click on a piece and theres no already selected piece, mark this piece as selected and remove other selected pieces
 click(cell(X,Y,Z)) :: control(C) & hasColor(X,Y,Z,C) ==> selectedCell(X,Y,Z)
 click(cell(X,Y,Z)) :: selectedCell(A,B,C) ==> ~selectedCell(A,B,C)
 
 % move a piece given no piece has moved or jumped on this turn
-click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & currentPiece(none)
+click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & currentPiece(none) & lastMove(none)
 & hasColor(X,Y,Z, white) & hasColor(I,J,K,P) ==>
  hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & currentPiece(X, Y, Z)
- & ~currentPiece(none)
+ & ~currentPiece(none) & ~lastMove(none) & lastMove(I,J,K)
 
 % jump a piece 
 click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(P) & selectedCell(I,J,K) &
-(currentPiece(none) | currentPiece(I,J,K)) & hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
+(currentPiece(none) | currentPiece(I,J,K)) & (lastMove(none) | lastMove(A,B,C)) & hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
 hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
-& currentPiece(X,Y,Z) & ~currentPiece(none) & ~currentPiece(I,J,K)
+& currentPiece(X,Y,Z) & ~currentPiece(none) & ~currentPiece(I,J,K) & ~lastMove(none) & ~lastMove(A,B,C) & lastMove(I,J,K)
 
 % Check that the cell we click on is the current piece (or a new one, if no current piece is assigned yet)
 click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
@@ -628,11 +631,13 @@ click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
 click(doneWithMove) :: control(P) & nextPlayer(P, N) & currentPiece(A,B,C) ==> ~control(P) & control(N) & ~currentPiece(A, B, C) & currentPiece(none)
 
 % change control after player's turn is over
-click(doneWithMove) :: control(P) & nextPlayer(P, N) ==> ~control(P) & control(N) 
+click(doneWithMove) :: control(P) & nextPlayer(P, N) ==> ~control(P) & control(N) & lastMove(none)
 
 % toggle between hints and no hints
 click(hint) :: hintOn(false) ==> ~hintOn(false) & hintOn(true) 
 click(hint) :: hintOn(true) ==> ~hintOn(true) & hintOn(false) 
+
+
 
 
  %%%% VIEW
@@ -642,7 +647,11 @@ click(hint) :: hintOn(true) ==> ~hintOn(true) & hintOn(false)
  style(cell(X, Y, Z), border-width, 2px) :- selectedCell(X, Y, Z)
  style(cell(X, Y, Z), border-color, C) :- ~selectedCell(X, Y, Z) & origColor(X, Y, Z, C)
  style(cell(X, Y, Z), border-width, 1px) :- ~selectedCell(X, Y, Z)
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) | hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & lastMove(none) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) ~lastMoveWasStep(X,Y,Z)
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & ~validJump(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) & ~lastMoveWasStep(X,Y,Z)
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & lastMoveWasStep(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z)
 
  innerhtml(currentPlayer, P) :- control(P)
 
@@ -1049,6 +1058,8 @@ currentPiece(none)
 gameOver(false)
 
 hintOn(false)
+
+lastMove(none)
 </textarea>
 
 <!--=========================================================================-->
