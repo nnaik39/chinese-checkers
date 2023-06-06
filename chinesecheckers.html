@@ -31,17 +31,128 @@
 <table border='0'>
   <tr>
     <td colspan='3' align='center'>
-      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player: </span>
-      <span id='currentPlayer' style='font-size:18px;color:#666666;font-family: sans-serif;'>Player: red</span>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>How many players? </span>
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'> </span>
+      <select id='numPlayers' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='2'>2</option>
+        <option value="4">4</option>
+        <option value="6">6</option>
+      </select>
+      <br/>
+      <br/>
+      <span id='instructions' style='font-size:18px;color:#666666;font-family: sans-serif;'></span>
+      <br/>
+      <br/>
+
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>What colors? </span>
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 1 </span>
+      <select id='playerColor(first)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 2 </span>
+      <select id='playerColor(second)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+      <br/>
+      <br/>
+
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 3 </span>
+      <select id='playerColor(third)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 4 </span>
+      <select id='playerColor(fourth)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 5 </span>
+      <select id='playerColor(fifth)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 6 </span>
+      <select id='playerColor(sixth)' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='red'>red</option>
+        <option value="purple">purple</option>
+        <option value="green">green</option>
+        <option value='blue'>blue</option>
+        <option value="yellow">yellow</option>
+        <option value="pink">pink</option>
+        <option value="orange">orange</option>
+      </select>
+
+      <br/>
+      <br/>
+      <span id='colorError' style='font-size:18px;color:#c62929;font-family: sans-serif;'></span>
+      <br/>
+      <br />
+
+      <input id='startGame' class='topButtons' type='button' value='Start Game' onclick='modbutton(this)'/>
+      <br/>
+      <br />
+
+      <span id='playerHeader' style='font-size:18px;color:#666666;font-family: sans-serif;'>Player: </span>
+      <span id='currentPlayer' style='font-size:18px;color:#666666;font-family: sans-serif;'></span>
       <br/>
       <br />
       <input id='doneWithMove' class='topButtons' type='button' value='Done With Move' onclick='modbutton(this)'/>
       <input id='hint' class='topButtons' type='button' value='Guide' onclick='modbutton(this)'/>
     </td>
   </tr>
+
   <tr>
     <td>
-      <table cellspacing='2' border='4' bgcolor='#FFF5E5'>
+      <table cellspacing='2' border='4' bgcolor='#FFF5E5' >
         <tr>
           <td class="invisibleCell" width='60' height='20' onclick='modbutton(this)'>&nbsp;</td>
         </tr>
@@ -600,7 +711,7 @@ validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,2) &
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,-2) & evaluate(minus(Y,R), B) & same(B,2) & same(S,Z) & evaluate(minus(Q,1), COORD1) & evaluate(plus(R,1), COORD2) & hasColor(COORD1, COORD2, S, COLOR) & distinct(COLOR,white))
 
 % perform bottom right jump
-validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) & evaluate(minus(Z,S), B) & same(B,-2) & same(Q,X) & evaluate(plus(R,1), COORD1) & evaluate(minus(S,1), COORD2) & hasColor(Q, COORD1, COORD2, COLOR) & distinct(COLOR,white))
+validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) & evaluate(minus(Z,S), B) & same(B,-2) & same(Q,X) & evaluate(plus(R,1), COORD1) & evaluate(minus(S,1), COORD2))
 
 % check for white cell (needed for guide button)
 white(X, Y, Z) :- ~hasColor(X,Y,Z,red) & ~hasColor(X,Y,Z,purple) & ~hasColor(X,Y,Z,blue) & ~hasColor(X,Y,Z,green) & ~hasColor(X,Y,Z,orange) & ~hasColor(X,Y,Z,yellow)
@@ -613,22 +724,24 @@ click(cell(X,Y,Z)) :: control(C) & hasColor(X,Y,Z,C) ==> selectedCell(X,Y,Z)
 click(cell(X,Y,Z)) :: selectedCell(A,B,C) ==> ~selectedCell(A,B,C)
 
 % move a piece given no piece has moved or jumped on this turn
-click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & currentPiece(none) & lastMove(none)
-& hasColor(X,Y,Z, white) & hasColor(I,J,K,P) ==>
- hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & currentPiece(X, Y, Z)
- & ~currentPiece(none) & ~lastMove(none) & lastMove(I,J,K)
 
-% jump a piece 
+click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & currentPiece(none)  & lastMove(none)
+& hasColor(X,Y,Z, white) & hasColor(I,J,K,P) ==>
+ hasColor(X,Y,Z,P) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & currentPiece(X, Y, Z)
+ & ~currentPiece(none) & ~selectedCell(I,J,K) & ~lastMove(none) & lastMove(I,J,K)
+
+% jump a piece
 click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(P) & selectedCell(I,J,K) &
 (currentPiece(none) | currentPiece(I,J,K)) & (lastMove(none) | lastMove(A,B,C)) & hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
 hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
-& currentPiece(X,Y,Z) & ~currentPiece(none) & ~currentPiece(I,J,K) & ~lastMove(none) & ~lastMove(A,B,C) & lastMove(I,J,K)
+& currentPiece(X,Y,Z) & ~currentPiece(none) & ~currentPiece(I,J,K) & cellShouldHaveMoved & ~lastMove(none) & ~lastMove(A,B,C) & lastMove(I,J,K)
 
-% Check that the cell we click on is the current piece (or a new one, if no current piece is assigned yet)
-click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
+% check for win
+click(doneWithMove) :: control(P) & player(N, P) & oppositeFrom(N, O) & playerPiece(O, X,Y,Z) & hasColor(X,Y,Z,P) ==> gameOver & winner(P)
 
 % change control after player's turn is over
-click(doneWithMove) :: control(P) & nextPlayer(P, N) & currentPiece(A,B,C) ==> ~control(P) & control(N) & ~currentPiece(A, B, C) & currentPiece(none)
+click(doneWithMove) :: control(P) & nextPlayer(P, N) & currentPiece(A,B,C) ==> ~control(P) & control(N)
+& ~currentPiece(A, B, C) & currentPiece(none)
 
 % change control after player's turn is over
 click(doneWithMove) :: control(P) & nextPlayer(P, N) ==> ~control(P) & control(N) & lastMove(none)
@@ -637,10 +750,33 @@ click(doneWithMove) :: control(P) & nextPlayer(P, N) ==> ~control(P) & control(N
 click(hint) :: hintOn(false) ==> ~hintOn(false) & hintOn(true) 
 click(hint) :: hintOn(true) ==> ~hintOn(true) & hintOn(false) 
 
+origColor(X,Y,Z,C) :- playerPiece(P,X,Y,Z) & player(P,C)
 
+select(playerColor(X), Y) :: ~value(playerColor(X), Y) ==> value(playerColor(X), Y) & player(X, Y)
+select(playerColor(X), Y) :: value(playerColor(X), A) & player(X, A) ==> ~value(playerColor(X), A) & ~player(X, A)
 
+select(numPlayers, Y) :: ~value(numPlayers, Y) ==> value(numPlayers, Y) & totalPlayers(Y)
+select(numPlayers, Y) :: value(numPlayers, A) & totalPlayers(A) ==> ~value(numPlayers, A) & ~totalPlayers(A)
 
- %%%% VIEW
+click(startGame) :: playerPiece(P,X,Y,Z) & player(P,C) ==> hasColor(X,Y,Z,C)
+click(startGame) :: player(first, S) ==> control(S)
+
+%% Handle logic for all the different numbers of players 
+click(startGame) :: totalPlayers(6) & player(first, A) & player(second, B) & player(third, C) 
+& player(fourth, D) & player(fifth, E) & player(sixth, F) ==> nextPlayer(A,B) & nextPlayer(B,C) & nextPlayer(C,D)
+& nextPlayer(D,E) & nextPlayer(E,F) & nextPlayer(F,A)
+click(startGame) :: totalPlayers(4) & player(first, A) & player(second, B) & player(fourth, C) & player(fifth, D)
+ ==> nextPlayer(A,B) & nextPlayer(B,C) & nextPlayer(C,D) & nextPlayer(D,A)
+click(startGame) :: totalPlayers(2) & player(first, A) & player(fourth, B) ==> nextPlayer(A,B) & nextPlayer(B,A)
+
+% Check that the cell we click on is the current piece (or a new one, if no current piece is assigned yet)
+click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
+
+colorConflict :- player(A, B) & player(C, D) & distinct(A, C) & same(B, D)
+
+allColorsAssigned :- evaluate(countofall([A,B], player(A, B)), C) & totalPlayers(X) & same(C, X)
+
+%%%% VIEW
 
  style(cell(X, Y, Z), background-color, C) :- hasColor(X, Y, Z, C)
  style(cell(X, Y, Z), border-color, lightblue) :- selectedCell(X, Y, Z)
@@ -655,37 +791,46 @@ click(hint) :: hintOn(true) ==> ~hintOn(true) & hintOn(false)
 
  innerhtml(currentPlayer, P) :- control(P)
 
+ style(startGame, background-color, grey) :- colorConflict
+ style(startGame, background-color, brown) :- ~colorConflict
+
+ style(startGame, background-color, grey) :- ~allColorsAssigned
+
+ innerhtml(colorError, "Please pick different colors for each player") :- colorConflict 
+ innerhtml(colorError, "") :- ~colorConflict 
+
+ innerhtml(instructions, "Select colors for players 1 and 4") :- totalPlayers(2) 
+ innerhtml(instructions, "Select colors for players 1, 2, 4 and 5") :- totalPlayers(4) 
+ innerhtml(instructions, "Select colors for all players") :- totalPlayers(6) 
+
+ attribute(startGame, disabled, true) :- colorConflict
+ attribute(startGame, disabled, false) :- ~colorConflict
+
+ attribute(startGame, disabled, true) :- ~allColorsAssigned
+ attribute(startGame, disabled, false) :- allColorsAssigned
+ innerhtml(currentPlayer, P) :- ~gameOver & control(P)
+ innerhtml(playerHeader, P) :- gameOver & winner(P)
+ innerhtml(currentPlayer, "wins!!") :- gameOver
+
 </textarea>
 
 <!--=======================================================================-->
 
 <textarea id='lambda' type='text/hrf' style='display:none'>
-hasColor(4,-8,4, red)
 
-hasColor(3,-7,4, red)
-hasColor(4,-7,3, red)
+  playerPiece(first, 4,-8,4)
 
-hasColor(2,-6,4, red)
-hasColor(3,-6,3, red)
-hasColor(4,-6,2, red)
+playerPiece(first, 3,-7,4)
+playerPiece(first, 4,-7,3)
 
-hasColor(1,-5,4, red)
-hasColor(2,-5,3, red)
-hasColor(3,-5,2, red)
-hasColor(4,-5,1, red)
+playerPiece(first, 2,-6,4)
+playerPiece(first, 3,-6,3)
+playerPiece(first, 4,-6,2)
 
-origColor(4,-8,4, red)
-origColor(3,-7,4, red)
-origColor(4,-7,3, red)
-
-origColor(2,-6,4, red)
-origColor(3,-6,3, red)
-origColor(4,-6,2, red)
-
-origColor(1,-5,4, red)
-origColor(2,-5,3, red)
-origColor(3,-5,2, red)
-origColor(4,-5,1, red)
+playerPiece(first, 1,-5,4)
+playerPiece(first, 2,-5,3)
+playerPiece(first, 3,-5,2)
+playerPiece(first, 4,-5,1)
 
 hasColor(0, -4, 4, white)
 hasColor(1, -4, 3, white)
@@ -757,305 +902,86 @@ hasColor(-2,4,-2, white)
 hasColor(-1,4,-3, white)
 hasColor(0,4,-4, white)
 
-hasColor(0, -4, 4, white)
-hasColor(1, -4, 3, white)
-hasColor(2, -4, 2, white)
-hasColor(3, -4, 1, white)
-hasColor(4, -4, 0, white)
+playerPiece(second, 5, -4, -1)
+playerPiece(second, 6, -4, -2)
+playerPiece(second, 7, -4, -3)
+playerPiece(second, 8, -4, -4)
 
-hasColor(-1, -3, 4, white)
-hasColor(0, -3, 3, white)
-hasColor(1, -3, 2, white)
-hasColor(2, -3, 1, white)
-hasColor(3, -3, 0, white)
-hasColor(4, -3, -1, white)
+playerPiece(second, 5, -3, -2)
+playerPiece(second, 6, -3, -3)
+playerPiece(second, 7, -3, -4)
 
-hasColor(-2,-2,4, white)
-hasColor(-1,-2,3, white)
-hasColor(0,-2,2, white)
-hasColor(1,-2,1, white)
-hasColor(2,-2,0, white)
-hasColor(3,-2,-1, white)
-hasColor(4,-2,-2, white)
+playerPiece(second, 5, -2, -3)
+playerPiece(second, 6, -2, -4)
 
-hasColor(-3,-1,4, white)
-hasColor(-2,-1,3, white)
-hasColor(-1,-1,2, white)
-hasColor(0,-1,1, white)
-hasColor(1,-1,0, white)
-hasColor(2,-1,-1, white)
-hasColor(3,-1,-2, white)
-hasColor(4,-1,-3, white)
+playerPiece(second, 5, -1, -4)
 
-hasColor(-4,0,4, white)
-hasColor(-3,0,3, white)
-hasColor(-2,0,2, white)
-hasColor(-1,0,1, white)
-hasColor(0,0,0, white)
-hasColor(1,0,-1, white)
-hasColor(2,0,-2, white)
-hasColor(3,0,-3, white)
-hasColor(4,0,-4, white)
+playerPiece(fourth,-4, 5, -1)
+playerPiece(fourth,-3,5,-2)
+playerPiece(fourth,-2,5,-3)
+playerPiece(fourth,-1,5,-4)
 
-hasColor(-4,1,3, white)
-hasColor(-3,1,2, white)
-hasColor(-2,1,1, white)
-hasColor(-1,1,0, white)
-hasColor(0,1,-1, white)
-hasColor(1,1,-2, white)
-hasColor(2,1,-3, white)
-hasColor(3,1,-4, white)
+playerPiece(fourth,-4,6,-2)
+playerPiece(fourth,-3,6,-3)
+playerPiece(fourth,-2,6,-4)
 
-hasColor(-4,2,2, white)
-hasColor(-3,2,1, white)
-hasColor(-2,2,0, white)
-hasColor(-1,2,-1, white)
-hasColor(0,2,-2, white)
-hasColor(1,2,-3, white)
-hasColor(2,2,-4, white)
+playerPiece(fourth,-4,7,-3)
+playerPiece(fourth,-3,7,-4)
 
-hasColor(-4,3,1, white)
-hasColor(-3,3,0, white)
-hasColor(-2,3,-1, white)
-hasColor(-1,3,-2, white)
-hasColor(0,3,-3, white)
-hasColor(1,3,-4, white)
+playerPiece(fourth,-4,8,-4)
 
-hasColor(-4, 4, 0, white)
-hasColor(-3,4,-1, white)
-hasColor(-2,4,-2, white)
-hasColor(-1,4,-3, white)
-hasColor(0,4,-4, white)
+playerPiece(third, 1, 4, -5)
+playerPiece(third, 2, 4, -6)
+playerPiece(third, 3, 4, -7)
+playerPiece(third, 4, 4, -8)
 
-origColor(0, -4, 4, white)
-origColor(1, -4, 3, white)
-origColor(2, -4, 2, white)
-origColor(3, -4, 1, white)
-origColor(4, -4, 0, white)
+playerPiece(third, 2, 3, -5)
+playerPiece(third, 3, 3, -6)
+playerPiece(third, 4, 3, -7)
 
-origColor(-1, -3, 4, white)
-origColor(0, -3, 3, white)
-origColor(1, -3, 2, white)
-origColor(2, -3, 1, white)
-origColor(3, -3, 0, white)
-origColor(4, -3, -1, white)
+playerPiece(third, 3, 2, -5)
+playerPiece(third, 4, 2, -6)
 
-origColor(-2,-2,4, white)
-origColor(-1,-2,3, white)
-origColor(0,-2,2, white)
-origColor(1,-2,1, white)
-origColor(2,-2,0, white)
-origColor(3,-2,-1, white)
-origColor(4,-2,-2, white)
+playerPiece(third, 4, 1, -5)
 
-origColor(-3,-1,4, white)
-origColor(-2,-1,3, white)
-origColor(-1,-1,2, white)
-origColor(0,-1,1, white)
-origColor(1,-1,0, white)
-origColor(2,-1,-1, white)
-origColor(3,-1,-2, white)
-origColor(4,-1,-3, white)
+playerPiece(fifth, -8, 4, 4)
+playerPiece(fifth, -7, 4, 3)
+playerPiece(fifth, -6, 4, 2)
+playerPiece(fifth, -5, 4, 1)
 
-origColor(-4,0,4, white)
-origColor(-3,0,3, white)
-origColor(-2,0,2, white)
-origColor(-1,0,1, white)
-origColor(0,0,0, white)
-origColor(1,0,-1, white)
-origColor(2,0,-2, white)
-origColor(3,0,-3, white)
-origColor(4,0,-4, white)
+playerPiece(fifth, -7, 3, 4)
+playerPiece(fifth, -6, 3, 3)
+playerPiece(fifth, -5, 3, 2)
 
-origColor(-4,1,3, white)
-origColor(-3,1,2, white)
-origColor(-2,1,1, white)
-origColor(-1,1,0, white)
-origColor(0,1,-1, white)
-origColor(1,1,-2, white)
-origColor(2,1,-3, white)
-origColor(3,1,-4, white)
+playerPiece(fifth, -5, 2, 3)
+playerPiece(fifth, -6, 2, 4)
 
-origColor(-4,2,2, white)
-origColor(-3,2,1, white)
-origColor(-2,2,0, white)
-origColor(-1,2,-1, white)
-origColor(0,2,-2, white)
-origColor(1,2,-3, white)
-origColor(2,2,-4, white)
+playerPiece(fifth, -5, 1, 4)
 
-origColor(-4,3,1, white)
-origColor(-3,3,0, white)
-origColor(-2,3,-1, white)
-origColor(-1,3,-2, white)
-origColor(0,3,-3, white)
-origColor(1,3,-4, white)
+playerPiece(sixth, -4, -1, 5)
+playerPiece(sixth, -3, -2, 5)
+playerPiece(sixth, -2, -3, 5)
+playerPiece(sixth, -1, -4, 5)
 
-origColor(-4, 4, 0, white)
-origColor(-3,4,-1, white)
-origColor(-2,4,-2, white)
-origColor(-1,4,-3, white)
-origColor(0,4,-4, white)
+playerPiece(sixth, -4, -2, 6)
+playerPiece(sixth, -3, -3, 6)
+playerPiece(sixth, -2, -4, 6)
 
-hasColor(-4, 5, -1, green)
-hasColor(-3,5,-2, green)
-hasColor(-2,5,-3, green)
-hasColor(-1,5,-4, green)
+playerPiece(sixth, -3, -4, 7)
+playerPiece(sixth, -4, -3, 7)
 
-hasColor(-4,6,-2, green)
-hasColor(-3,6,-3, green)
-hasColor(-2,6,-4, green)
+playerPiece(sixth, -4, -4, 8)
 
-hasColor(-4,7,-3, green)
-hasColor(-3,7,-4, green)
-
-hasColor(-4,8,-4, green)
-
-origColor(-4, 5, -1, green)
-origColor(-3,5,-2, green)
-origColor(-2,5,-3, green)
-origColor(-1,5,-4, green)
-
-origColor(-4,6,-2, green)
-origColor(-3,6,-3, green)
-origColor(-2,6,-4, green)
-
-origColor(-4,7,-3, green)
-origColor(-3,7,-4, green)
-
-origColor(-4,8,-4, green)
-
-hasColor(5, -4, -1, purple)
-hasColor(6, -4, -2, purple)
-hasColor(7, -4, -3, purple)
-hasColor(8, -4, -4, purple)
-
-hasColor(5, -3, -2, purple)
-hasColor(6, -3, -3, purple)
-hasColor(7, -3, -4, purple)
-
-hasColor(5, -2, -3, purple)
-hasColor(6, -2, -4, purple)
-
-hasColor(5, -1, -4, purple)
-
-origColor(5, -4, -1, purple)
-origColor(6, -4, -2, purple)
-origColor(7, -4, -3, purple)
-origColor(8, -4, -4, purple)
-
-origColor(5, -3, -2, purple)
-origColor(6, -3, -3, purple)
-origColor(7, -3, -4, purple)
-
-origColor(5, -2, -3, purple)
-origColor(6, -2, -4, purple)
-
-origColor(5, -1, -4, purple)
-
-hasColor(1, 4, -5, blue)
-hasColor(2, 4, -6, blue)
-hasColor(3, 4, -7, blue)
-hasColor(4, 4, -8, blue)
-
-hasColor(2, 3, -5, blue)
-hasColor(3, 3, -6, blue)
-hasColor(4, 3, -7, blue)
-
-hasColor(3, 2, -5, blue)
-hasColor(4, 2, -6, blue)
-
-hasColor(4, 1, -5, blue)
-
-origColor(1, 4, -5, blue)
-origColor(2, 4, -6, blue)
-origColor(3, 4, -7, blue)
-origColor(4, 4, -8, blue)
-
-origColor(2, 3, -5, blue)
-origColor(3, 3, -6, blue)
-origColor(4, 3, -7, blue)
-
-origColor(3, 2, -5, blue)
-origColor(4, 2, -6, blue)
-
-origColor(4, 1, -5, blue)
-
-hasColor(-8, 4, 4, orange)
-hasColor(-7, 4, 3, orange)
-hasColor(-6, 4, 2, orange)
-hasColor(-5, 4, 1, orange)
-
-hasColor(-7, 3, 4, orange)
-hasColor(-6, 3, 3, orange)
-hasColor(-5, 3, 2, orange)
-
-hasColor(-5, 2, 3, orange)
-hasColor(-6, 2, 4, orange)
-
-hasColor(-5, 1, 4, orange)
-
-origColor(-8, 4, 4, orange)
-origColor(-7, 4, 3, orange)
-origColor(-6, 4, 2, orange)
-origColor(-5, 4, 1, orange)
-
-origColor(-7, 3, 4, orange)
-origColor(-6, 3, 3, orange)
-origColor(-5, 3, 2, orange)
-
-origColor(-5, 2, 3, orange)
-origColor(-6, 2, 4, orange)
-
-origColor(-5, 1, 4, orange)
-
-hasColor(-4, -1, 5, yellow)
-hasColor(-3, -2, 5, yellow)
-hasColor(-2, -3, 5, yellow)
-hasColor(-1, -4, 5, yellow)
-
-hasColor(-4, -2, 6, yellow)
-hasColor(-3, -3, 6, yellow)
-hasColor(-2, -4, 6, yellow)
-
-hasColor(-3, -4, 7, yellow)
-hasColor(-4, -3, 7, yellow)
-
-hasColor(-4, -4, 8, yellow)
-
-origColor(-4, -1, 5, yellow)
-origColor(-3, -2, 5, yellow)
-origColor(-2, -3, 5, yellow)
-origColor(-1, -4, 5, yellow)
-
-origColor(-4, -2, 6, yellow)
-origColor(-3, -3, 6, yellow)
-origColor(-2, -4, 6, yellow)
-
-origColor(-3, -4, 7, yellow)
-origColor(-4, -3, 7, yellow)
-
-origColor(-4, -4, 8, yellow)
-
-player(red)
-player(green)
-player(purple)
-player(blue)
-player(orange)
-player(yellow)
-
-nextPlayer(red, purple)
-nextPlayer(purple, blue)
-nextPlayer(blue, green)
-nextPlayer(green, orange)
-nextPlayer(orange, yellow)
-nextPlayer(yellow, red)
-
-control(red)
+oppositeFrom(first, fourth)
+oppositeFrom(fourth,first)
+oppositeFrom(second,fifth)
+oppositeFrom(fifth,second)
+oppositeFrom(third,sixth)
+oppositeFrom(sixth,third)
 
 currentPiece(none)
 
-gameOver(false)
+~gameOver
 
 hintOn(false)
 
