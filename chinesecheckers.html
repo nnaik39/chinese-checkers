@@ -711,7 +711,7 @@ validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,2) &
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,-2) & evaluate(minus(Y,R), B) & same(B,2) & same(S,Z) & evaluate(minus(Q,1), COORD1) & evaluate(plus(R,1), COORD2) & hasColor(COORD1, COORD2, S, COLOR) & distinct(COLOR,white))
 
 % perform bottom right jump
-validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) & evaluate(minus(Z,S), B) & same(B,-2) & same(Q,X) & evaluate(plus(R,1), COORD1) & evaluate(minus(S,1), COORD2))
+validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) & evaluate(minus(Z,S), B) & same(B,-2) & same(Q,X) & evaluate(plus(R,1), COORD1) & evaluate(minus(S,1), COORD2) & hasColor(Q, COORD1, COORD2, COLOR) & distinct(COLOR,white))
 
 % check for white cell (needed for guide button)
 white(X, Y, Z) :- ~hasColor(X,Y,Z,red) & ~hasColor(X,Y,Z,purple) & ~hasColor(X,Y,Z,blue) & ~hasColor(X,Y,Z,green) & ~hasColor(X,Y,Z,orange) & ~hasColor(X,Y,Z,yellow)
