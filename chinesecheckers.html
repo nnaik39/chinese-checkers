@@ -31,7 +31,23 @@
 <table border='0'>
   <tr>
     <td colspan='3' align='center'>
-      <span id='colorPicker' style='font-size:18px;color:#666666;font-family: sans-serif;'>What colors? </span>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>How many players? </span>
+      <br/>
+      <br/>
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'> </span>
+      <select id='numPlayers' style='width:80' onchange='modselector(this)'>
+        <option value='unknown'></option>
+        <option value='2'>2</option>
+        <option value="4">4</option>
+        <option value="6">6</option>
+      </select>
+      <br/>
+      <br/>
+      <span id='instructions' style='font-size:18px;color:#666666;font-family: sans-serif;'></span>
+      <br/>
+      <br/>
+
+      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>What colors? </span>
       <br/>
       <br/>
       <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player 1 </span>
@@ -125,7 +141,7 @@
       <br/>
       <br />
 
-      <span style='font-size:18px;color:#666666;font-family: sans-serif;'>Player: </span>
+      <span id='playerHeader' style='font-size:18px;color:#666666;font-family: sans-serif;'>Player: </span>
       <span id='currentPlayer' style='font-size:18px;color:#666666;font-family: sans-serif;'></span>
       <br/>
       <br />
@@ -709,13 +725,16 @@ click(cell(X,Y,Z)) :: selectedCell(A,B,C) ==> ~selectedCell(A,B,C)
 click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & currentPiece(none) 
 & hasColor(X,Y,Z, white) & hasColor(I,J,K,P) ==>
  hasColor(X,Y,Z,P) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & currentPiece(X, Y, Z)
- & ~currentPiece(none)
+ & ~currentPiece(none) & ~selectedCell(I,J,K)
 
 % jump a piece
 click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(P) & selectedCell(I,J,K) &
 (currentPiece(none) | currentPiece(I,J,K)) & hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
 hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
 & currentPiece(X,Y,Z) & ~currentPiece(none) & ~currentPiece(I,J,K) & cellShouldHaveMoved
+
+% check for win
+click(doneWithMove) :: control(P) & player(N, P) & oppositeFrom(N, O) & playerPiece(O, X,Y,Z) & hasColor(X,Y,Z,P) ==> gameOver & winner(P)
 
 % change control after player's turn is over
 click(doneWithMove) :: control(P) & nextPlayer(P, N) & currentPiece(A,B,C) ==> ~control(P) & control(N)
@@ -730,18 +749,26 @@ origColor(X,Y,Z,C) :- playerPiece(P,X,Y,Z) & player(P,C)
 select(playerColor(X), Y) :: ~value(playerColor(X), Y) ==> value(playerColor(X), Y) & player(X, Y)
 select(playerColor(X), Y) :: value(playerColor(X), A) & player(X, A) ==> ~value(playerColor(X), A) & ~player(X, A)
 
+select(numPlayers, Y) :: ~value(numPlayers, Y) ==> value(numPlayers, Y) & totalPlayers(Y)
+select(numPlayers, Y) :: value(numPlayers, A) & totalPlayers(A) ==> ~value(numPlayers, A) & ~totalPlayers(A)
+
 click(startGame) :: playerPiece(P,X,Y,Z) & player(P,C) ==> hasColor(X,Y,Z,C)
 click(startGame) :: player(first, S) ==> control(S)
-click(startGame) :: player(first, A) & player(second, B) & player(third, C) 
+
+%% Handle logic for all the different numbers of players 
+click(startGame) :: totalPlayers(6) & player(first, A) & player(second, B) & player(third, C) 
 & player(fourth, D) & player(fifth, E) & player(sixth, F) ==> nextPlayer(A,B) & nextPlayer(B,C) & nextPlayer(C,D)
 & nextPlayer(D,E) & nextPlayer(E,F) & nextPlayer(F,A)
+click(startGame) :: totalPlayers(4) & player(first, A) & player(second, B) & player(fourth, C) & player(fifth, D)
+ ==> nextPlayer(A,B) & nextPlayer(B,C) & nextPlayer(C,D) & nextPlayer(D,A)
+click(startGame) :: totalPlayers(2) & player(first, A) & player(fourth, B) ==> nextPlayer(A,B) & nextPlayer(B,A)
 
 % Check that the cell we click on is the current piece (or a new one, if no current piece is assigned yet)
 click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
 
 colorConflict :- player(A, B) & player(C, D) & distinct(A, C) & same(B, D)
 
-sixColorsAssigned :- evaluate(countofall([A,B], player(A, B)), C) & same(C, 6)
+allColorsAssigned :- evaluate(countofall([A,B], player(A, B)), C) & totalPlayers(X) & same(C, X)
 
 %%%% VIEW
 
@@ -757,16 +784,23 @@ sixColorsAssigned :- evaluate(countofall([A,B], player(A, B)), C) & same(C, 6)
  style(startGame, background-color, grey) :- colorConflict
  style(startGame, background-color, brown) :- ~colorConflict
 
- style(startGame, background-color, grey) :- ~sixColorsAssigned
+ style(startGame, background-color, grey) :- ~allColorsAssigned
 
  innerhtml(colorError, "Please pick different colors for each player") :- colorConflict 
  innerhtml(colorError, "") :- ~colorConflict 
 
+ innerhtml(instructions, "Select colors for players 1 and 4") :- totalPlayers(2) 
+ innerhtml(instructions, "Select colors for players 1, 2, 4 and 5") :- totalPlayers(4) 
+ innerhtml(instructions, "Select colors for all players") :- totalPlayers(6) 
+
  attribute(startGame, disabled, true) :- colorConflict
  attribute(startGame, disabled, false) :- ~colorConflict
 
- attribute(startGame, disabled, true) :- ~sixColorsAssigned
- attribute(startGame, disabled, false) :- sixColorsAssigned
+ attribute(startGame, disabled, true) :- ~allColorsAssigned
+ attribute(startGame, disabled, false) :- allColorsAssigned
+ innerhtml(currentPlayer, P) :- ~gameOver & control(P)
+ innerhtml(playerHeader, P) :- gameOver & winner(P)
+ innerhtml(currentPlayer, "wins!!") :- gameOver
 
 </textarea>
 
@@ -787,76 +821,6 @@ playerPiece(first, 1,-5,4)
 playerPiece(first, 2,-5,3)
 playerPiece(first, 3,-5,2)
 playerPiece(first, 4,-5,1)
-
-hasColor(0, -4, 4, white)
-hasColor(1, -4, 3, white)
-hasColor(2, -4, 2, white)
-hasColor(3, -4, 1, white)
-hasColor(4, -4, 0, white)
-
-hasColor(-1, -3, 4, white)
-hasColor(0, -3, 3, white)
-hasColor(1, -3, 2, white)
-hasColor(2, -3, 1, white)
-hasColor(3, -3, 0, white)
-hasColor(4, -3, -1, white)
-
-hasColor(-2,-2,4, white)
-hasColor(-1,-2,3, white)
-hasColor(0,-2,2, white)
-hasColor(1,-2,1, white)
-hasColor(2,-2,0, white)
-hasColor(3,-2,-1, white)
-hasColor(4,-2,-2, white)
-
-hasColor(-3,-1,4, white)
-hasColor(-2,-1,3, white)
-hasColor(-1,-1,2, white)
-hasColor(0,-1,1, white)
-hasColor(1,-1,0, white)
-hasColor(2,-1,-1, white)
-hasColor(3,-1,-2, white)
-hasColor(4,-1,-3, white)
-
-hasColor(-4,0,4, white)
-hasColor(-3,0,3, white)
-hasColor(-2,0,2, white)
-hasColor(-1,0,1, white)
-hasColor(0,0,0, white)
-hasColor(1,0,-1, white)
-hasColor(2,0,-2, white)
-hasColor(3,0,-3, white)
-hasColor(4,0,-4, white)
-
-hasColor(-4,1,3, white)
-hasColor(-3,1,2, white)
-hasColor(-2,1,1, white)
-hasColor(-1,1,0, white)
-hasColor(0,1,-1, white)
-hasColor(1,1,-2, white)
-hasColor(2,1,-3, white)
-hasColor(3,1,-4, white)
-
-hasColor(-4,2,2, white)
-hasColor(-3,2,1, white)
-hasColor(-2,2,0, white)
-hasColor(-1,2,-1, white)
-hasColor(0,2,-2, white)
-hasColor(1,2,-3, white)
-hasColor(2,2,-4, white)
-
-hasColor(-4,3,1, white)
-hasColor(-3,3,0, white)
-hasColor(-2,3,-1, white)
-hasColor(-1,3,-2, white)
-hasColor(0,3,-3, white)
-hasColor(1,3,-4, white)
-
-hasColor(-4, 4, 0, white)
-hasColor(-3,4,-1, white)
-hasColor(-2,4,-2, white)
-hasColor(-1,4,-3, white)
-hasColor(0,4,-4, white)
 
 hasColor(0, -4, 4, white)
 hasColor(1, -4, 3, white)
@@ -998,9 +962,16 @@ playerPiece(sixth, -4, -3, 7)
 
 playerPiece(sixth, -4, -4, 8)
 
+oppositeFrom(first, fourth)
+oppositeFrom(fourth,first)
+oppositeFrom(second,fifth)
+oppositeFrom(fifth,second)
+oppositeFrom(third,sixth)
+oppositeFrom(sixth,third)
+
 currentPiece(none)
 
-gameOver(false)
+~gameOver
 
 hintOn(false)
 </textarea>
