@@ -713,9 +713,6 @@ validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(X,Q), A) & same(A,-2) 
 % perform bottom right jump
 validJump(X,Y,Z) :- selectedCell(Q,R,S) & (evaluate(minus(Y,R), A) & same(A,2) & evaluate(minus(Z,S), B) & same(B,-2) & same(Q,X) & evaluate(plus(R,1), COORD1) & evaluate(minus(S,1), COORD2) & hasColor(Q, COORD1, COORD2, COLOR) & distinct(COLOR,white))
 
-% check for white cell (needed for guide button)
-white(X, Y, Z) :- ~hasColor(X,Y,Z,red) & ~hasColor(X,Y,Z,purple) & ~hasColor(X,Y,Z,blue) & ~hasColor(X,Y,Z,green) & ~hasColor(X,Y,Z,orange) & ~hasColor(X,Y,Z,yellow)
-
 % check if last move was a one step move
 lastMoveWasStep(X,Y,Z) :- lastMove(X,Y,Z) & currentPiece(I,J,K) & evaluate(abs(minus(X,I)), A) & leq(A,1) & evaluate(abs(minus(Y,J)), B) & leq(B,1) & evaluate(abs(minus(Z,K)), C) & leq(C,1)
 
@@ -733,10 +730,10 @@ click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & curr
 % jump a piece
 click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(P) & selectedCell(I,J,K) &
 (currentPiece(none) | currentPiece(I,J,K)) & (lastMove(none) | lastMove(A,B,C)) & hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
-hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P)
+hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & ~selectedCell(I,J,K)
 & currentPiece(X,Y,Z) & ~currentPiece(none) & ~currentPiece(I,J,K) & ~lastMove(none) & ~lastMove(A,B,C) & lastMove(I,J,K)
 
-% check for win
+% check for win [works if a single piece is on the opposite side]
 click(doneWithMove) :: control(P) & player(N, P) & oppositeFrom(N, O) & playerPiece(O, X,Y,Z) & hasColor(X,Y,Z,P) ==> gameOver & winner(P)
 
 % change control after player's turn is over
@@ -772,6 +769,8 @@ click(startGame) :: totalPlayers(2) & player(first, A) & player(fourth, B) ==> n
 % Check that the cell we click on is the current piece (or a new one, if no current piece is assigned yet)
 click(cell(X, Y, Z)) :: currentPiece(X, Y, Z) | currentPiece(none)
 
+white(X, Y, Z) :- ~hasColor(X,Y,Z,red) & ~hasColor(X,Y,Z,purple) & ~hasColor(X,Y,Z,blue) & ~hasColor(X,Y,Z,green) & ~hasColor(X,Y,Z,orange) & ~hasColor(X,Y,Z,yellow)
+
 colorConflict :- player(A, B) & player(C, D) & distinct(A, C) & same(B, D)
 
 allColorsAssigned :- evaluate(countofall([A,B], player(A, B)), C) & totalPlayers(X) & same(C, X)
@@ -781,13 +780,14 @@ allColorsAssigned :- evaluate(countofall([A,B], player(A, B)), C) & totalPlayers
  style(cell(X, Y, Z), background-color, C) :- hasColor(X, Y, Z, C)
  style(cell(X, Y, Z), border-color, lightblue) :- selectedCell(X, Y, Z)
  style(cell(X, Y, Z), border-width, 2px) :- selectedCell(X, Y, Z)
- style(cell(X, Y, Z), border-color, C) :- ~selectedCell(X, Y, Z) & origColor(X, Y, Z, C)
+ style(cell(X, Y, Z), border-color, black) :- ~selectedCell(X, Y, Z)
+
  style(cell(X, Y, Z), border-width, 1px) :- ~selectedCell(X, Y, Z)
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & lastMove(none) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) ~lastMoveWasStep(X,Y,Z)
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & ~validJump(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) & ~lastMoveWasStep(X,Y,Z)
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & lastMoveWasStep(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z)
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & lastMove(none) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & hasColor(X,Y,Z,white) & white(X,Y,Z)
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & hasColor(X,Y,Z,white) & ~lastMoveWasStep(X,Y,Z)
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & ~validJump(X,Y,Z) & lastMove(X,Y,Z) & hasColor(X,Y,Z,white) & white(X,Y,Z)
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & hasColor(X,Y,Z,white) & ~lastMoveWasStep(X,Y,Z) & white(X,Y,Z)
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & lastMoveWasStep(X,Y,Z) & lastMove(X,Y,Z) & hasColor(X,Y,Z,white) & white(X,Y,Z)
 
  innerhtml(currentPlayer, P) :- control(P)
 
@@ -810,7 +810,9 @@ allColorsAssigned :- evaluate(countofall([A,B], player(A, B)), C) & totalPlayers
  attribute(startGame, disabled, false) :- allColorsAssigned
  innerhtml(currentPlayer, P) :- ~gameOver & control(P)
  innerhtml(playerHeader, P) :- gameOver & winner(P)
- innerhtml(currentPlayer, "wins!!") :- gameOver
+ innerhtml(currentPlayer, "wins!") :- gameOver
+ attribute(doneWithMove, disabled, true) :- gameOver
+ attribute(guide, disabled, true) :- gameOver
 
 </textarea>
 
@@ -901,6 +903,79 @@ hasColor(-3,4,-1, white)
 hasColor(-2,4,-2, white)
 hasColor(-1,4,-3, white)
 hasColor(0,4,-4, white)
+
+%% Begin origColor for white 
+
+origColor(0, -4, 4, white)
+origColor(1, -4, 3, white)
+origColor(2, -4, 2, white)
+origColor(3, -4, 1, white)
+origColor(4, -4, 0, white)
+
+origColor(-1, -3, 4, white)
+origColor(0, -3, 3, white)
+origColor(1, -3, 2, white)
+origColor(2, -3, 1, white)
+origColor(3, -3, 0, white)
+origColor(4, -3, -1, white)
+
+origColor(-2,-2,4, white)
+origColor(-1,-2,3, white)
+origColor(0,-2,2, white)
+origColor(1,-2,1, white)
+origColor(2,-2,0, white)
+origColor(3,-2,-1, white)
+origColor(4,-2,-2, white)
+
+origColor(-3,-1,4, white)
+origColor(-2,-1,3, white)
+origColor(-1,-1,2, white)
+origColor(0,-1,1, white)
+origColor(1,-1,0, white)
+origColor(2,-1,-1, white)
+origColor(3,-1,-2, white)
+origColor(4,-1,-3, white)
+
+origColor(-4,0,4, white)
+origColor(-3,0,3, white)
+origColor(-2,0,2, white)
+origColor(-1,0,1, white)
+origColor(0,0,0, white)
+origColor(1,0,-1, white)
+origColor(2,0,-2, white)
+origColor(3,0,-3, white)
+origColor(4,0,-4, white)
+
+origColor(-4,1,3, white)
+origColor(-3,1,2, white)
+origColor(-2,1,1, white)
+origColor(-1,1,0, white)
+origColor(0,1,-1, white)
+origColor(1,1,-2, white)
+origColor(2,1,-3, white)
+origColor(3,1,-4, white)
+
+origColor(-4,2,2, white)
+origColor(-3,2,1, white)
+origColor(-2,2,0, white)
+origColor(-1,2,-1, white)
+origColor(0,2,-2, white)
+origColor(1,2,-3, white)
+origColor(2,2,-4, white)
+
+origColor(-4,3,1, white)
+origColor(-3,3,0, white)
+origColor(-2,3,-1, white)
+origColor(-1,3,-2, white)
+origColor(0,3,-3, white)
+origColor(1,3,-4, white)
+
+origColor(-4, 4, 0, white)
+origColor(-3,4,-1, white)
+origColor(-2,4,-2, white)
+origColor(-1,4,-3, white)
+origColor(0,4,-4, white)
+
 
 playerPiece(second, 5, -4, -1)
 playerPiece(second, 6, -4, -2)
