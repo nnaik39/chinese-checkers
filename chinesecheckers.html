@@ -783,11 +783,26 @@ allColorsAssigned :- evaluate(countofall([A,B], player(A, B)), C) & totalPlayers
  style(cell(X, Y, Z), border-width, 2px) :- selectedCell(X, Y, Z)
  style(cell(X, Y, Z), border-color, C) :- ~selectedCell(X, Y, Z) & origColor(X, Y, Z, C)
  style(cell(X, Y, Z), border-width, 1px) :- ~selectedCell(X, Y, Z)
+ 
+ % guide (move) given that player hasn’t moved yet
  style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & lastMove(none) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) ~lastMoveWasStep(X,Y,Z)
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & ~validJump(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) & ~lastMoveWasStep(X,Y,Z)
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & lastMoveWasStep(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z)
+
+ % guide (move) given that player already moved (can only go back to previous position)
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & lastMoveWasStep(X,Y,Z) & validMove(X,Y,Z) lastMove(X,Y,Z) & white(X,Y,Z) & hasColor(I,J,K, white)
+
+
+ 
+ % guide (jump) given that player hasn't moved
+ 
+ 
+ 
+ 
+ %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & lastMove(none) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
+ %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) ~lastMoveWasStep(X,Y,Z) 
+ %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & ~validJump(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
+ %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) & ~lastMoveWasStep(X,Y,Z) 
+ % if you move once, you can only move back to your previous position
+ %style(cell(X, Y, Z), background-color, lightblue) :- selectedCell(X, Y, Z)& hintOn(true) & lastMoveWasStep(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
 
  innerhtml(currentPlayer, P) :- control(P)
 
