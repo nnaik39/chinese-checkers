@@ -734,7 +734,7 @@ click(cell(X,Y,Z)) :: validMove(X,Y,Z) & control(P) & selectedCell(I,J,K) & curr
 click(cell(X,Y,Z)) :: validJump(X,Y,Z) & control(P) & selectedCell(I,J,K) &
 (currentPiece(none) | currentPiece(I,J,K)) & (lastMove(none) | lastMove(A,B,C)) & hasColor(X,Y,Z,white) & hasColor(I,J,K,P) ==>
 hasColor(X,Y,Z,P) & ~hasColor(X,Y,Z,white) & hasColor(I,J,K,white) & ~hasColor(I,J,K,P) & ~selectedCell(I,J,K)
-& currentPiece(X,Y,Z) & ~currentPiece(none) & ~currentPiece(I,J,K) & ~lastMove(none) & ~lastMove(A,B,C) & lastMove(I,J,K)
+& currentPiece(X,Y,Z) & ~currentPiece(none) & ~currentPiece(I,J,K) & ~lastMove(none) & ~lastMove(A,B,C) & lastMove(I,J,K) & ~lastJump(none) & lastJump(true)
 
 % check for win [works if a single piece is on the opposite side]
 click(doneWithMove) :: control(P) & player(N, P) & oppositeFrom(N, O) & evaluate(countofall([X,Y,Z], (playerPiece(O, X,Y,Z) & hasColor(X,Y,Z,P))), COUNT) & same(COUNT, 10) ==> gameOver & winner(P)
@@ -796,32 +796,13 @@ style(cell(X, Y, Z), border-color, C) :- ~selectedCell(X, Y, Z) & origColor(X, Y
  style(cell(X, Y, Z), border-width, 1px) :- ~selectedCell(X, Y, Z)
  
  % guide (move) 
- style(cell(X, Y, Z), background-color, lightblue) :- lastMove(none) & hintOn(true) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & hasColor(I,J,K, white) & white(X,Y,Z)
+ style(cell(X, Y, Z), background-color, lightblue) :- lastMove(none) & hintOn(true) & validMove(X, Y, Z) & ~validJump(X,Y,Z) & ~selectedCell(X, Y, Z) & hasColor(I,J,K, white) & white(X,Y,Z)
 
 % guide (jump) 
  style(cell(X, Y, Z), background-color, lightblue) :- lastMove(none) & hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) & ~lastMoveWasStep(X,Y,Z) 
 
  % guide (jump) -- but only if last move was jump
- %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) & lastMoveWasJump(X,Y,Z) 
-
-
- 
- % guide (move) given that player already moved (can only go back to previous position)
- %style(cell(X, Y, Z), background-color, lightblue) :: hintOn(true) & lastMoveWasStep(X,Y,Z) ==> lastMove(I,J,K) & white(X,Y,Z) & hasColor(I,J,K, white)
- 
- % can't jump if you've already stepped
- %style(cell(X, Y, Z), background-color, lightblue) :: lastMoveWasStep(X,Y,Z) & hintOn(true) ==> validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
- 
- % guide (jump) given that player hasn't moved
- %style(cell(X, Y, Z), background-color, lightblue) :: ~lastMoveWasStep(X,Y,Z) & hintOn(true) ==> validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
-
- 
- %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & lastMove(none) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
- %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) ~lastMoveWasStep(X,Y,Z) 
- %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & ~validJump(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
- %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) & ~lastMoveWasStep(X,Y,Z) 
- % if you move once, you can only move back to your previous position
- %style(cell(X, Y, Z), background-color, lightblue) :- selectedCell(X, Y, Z) & hintOn(true) & lastMoveWasStep(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
+ style(cell(X, Y, Z), background-color, lightblue) :- lastJump(true) & hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) 
 
  style(startGame, background-color, grey) :- colorConflict | ~allColorsAssigned
  style(startGame, background-color, brown) :- ~colorConflict & allColorsAssigned
@@ -1089,6 +1070,7 @@ currentPiece(none)
 hintOn(false)
 
 lastMove(none)
+lastJump(none)
 </textarea>
 
 <!--=========================================================================-->
