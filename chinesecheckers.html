@@ -759,6 +759,8 @@ select(numPlayers, Y) :: ~value(numPlayers, Y) ==> value(numPlayers, Y) & totalP
 select(numPlayers, Y) :: value(numPlayers, A) & totalPlayers(A) ==> ~value(numPlayers, A) & ~totalPlayers(A)
 
 click(startGame) :: playerPiece(P,X,Y,Z) & player(P,C) ==> hasColor(X,Y,Z,C)
+% NON-USED TRIANGLES NEED TO BE ASSIGNED WHITE
+click(startGame) :: playerPiece(P,X,Y,Z) & ~player(P,C) ==> hasColor(X,Y,Z,white)
 click(startGame) :: player(first, S) ==> control(S)
 
 %% Handle logic for all the different numbers of players 
@@ -790,25 +792,33 @@ style(cell(X, Y, Z), border-color, C) :- ~selectedCell(X, Y, Z) & origColor(X, Y
 
  style(cell(X, Y, Z), border-width, 1px) :- ~selectedCell(X, Y, Z)
  
- % guide (move) given that player hasn’t moved yet
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & lastMove(none) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
+ % guide (move) 
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & hasColor(I,J,K, white) & white(X,Y,Z)
 
+% guide (jump) 
+ style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) & ~lastMoveWasStep(X,Y,Z) 
+
+ % if you move once, you can only move back to your previous position
+%style(cell(X, Y, Z), background-color, lightblue) :- selectedCell(X, Y, Z) & hintOn(true) & lastMoveWasStep(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
+
+
+ 
  % guide (move) given that player already moved (can only go back to previous position)
- style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & lastMoveWasStep(X,Y,Z) & validMove(X,Y,Z) lastMove(X,Y,Z) & white(X,Y,Z) & hasColor(I,J,K, white)
-
-
+ style(cell(X, Y, Z), background-color, lightblue) :: hintOn(true) & lastMoveWasStep(X,Y,Z) ==> lastMove(I,J,K) & white(X,Y,Z) & hasColor(I,J,K, white)
+ 
+ % can't jump if you've already stepped
+ %style(cell(X, Y, Z), background-color, lightblue) :: lastMoveWasStep(X,Y,Z) & hintOn(true) ==> validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
  
  % guide (jump) given that player hasn't moved
- 
- 
- 
+ %style(cell(X, Y, Z), background-color, lightblue) :: ~lastMoveWasStep(X,Y,Z) & hintOn(true) ==> validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
+
  
  %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & lastMove(none) & validMove(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) 
  %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X, Y, Z) & ~selectedCell(X, Y, Z) & white(X,Y,Z) ~lastMoveWasStep(X,Y,Z) 
  %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validMove(X,Y,Z) & ~validJump(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
  %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) & ~lastMoveWasStep(X,Y,Z) 
  % if you move once, you can only move back to your previous position
- %style(cell(X, Y, Z), background-color, lightblue) :- selectedCell(X, Y, Z)& hintOn(true) & lastMoveWasStep(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
+ %style(cell(X, Y, Z), background-color, lightblue) :- selectedCell(X, Y, Z) & hintOn(true) & lastMoveWasStep(X,Y,Z) & lastMove(X,Y,Z) & white(X,Y,Z) 
 
  style(startGame, background-color, grey) :- colorConflict | ~allColorsAssigned
  style(startGame, background-color, brown) :- ~colorConflict & allColorsAssigned
