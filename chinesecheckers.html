@@ -768,7 +768,7 @@ select(numPlayers, Y) :: value(numPlayers, A) & totalPlayers(A) ==> ~value(numPl
 
 click(startGame) :: playerPiece(P,X,Y,Z) & player(P,C) ==> hasColor(X,Y,Z,C)
 % NON-USED TRIANGLES NEED TO BE ASSIGNED WHITE
-click(startGame) :: playerPiece(P,X,Y,Z) & ~player(P,C) ==> hasColor(X,Y,Z,white)
+click(startGame) :: playerPiece(P,X,Y,Z) & (~player(P,C) | player(P, unknown)) ==> hasColor(X,Y,Z,white)
 click(startGame) :: player(first, S) ==> control(S)
 
 %% Handle logic for all the different numbers of players 
@@ -808,8 +808,6 @@ allColorsAssigned :- evaluate(countofall([A,B], player(A, B) & distinct(B, unkno
 
  % guide (jump) -- but only if last move was jump
  %style(cell(X, Y, Z), background-color, lightblue) :- hintOn(true) & validJump(X,Y,Z) & ~validMove(X,Y,Z) & white(X,Y,Z) & lastMoveWasJump(X,Y,Z) 
-
-
  
  % guide (move) given that player already moved (can only go back to previous position)
  %style(cell(X, Y, Z), background-color, lightblue) :: hintOn(true) & lastMoveWasStep(X,Y,Z) ==> lastMove(I,J,K) & white(X,Y,Z) & hasColor(I,J,K, white)
